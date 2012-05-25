@@ -1,6 +1,7 @@
 package org.openintents.wifiserver;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.widget.TextSwitcher;
@@ -10,9 +11,12 @@ import android.widget.ToggleButton;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.main)
+@OptionsMenu(R.menu.menu)
 public class OIWiFiServerActivity extends Activity {
 
     private final static String  TAG                       = OIWiFiServerActivity.class.getSimpleName();
@@ -71,4 +75,14 @@ public class OIWiFiServerActivity extends Activity {
     protected void textSwitcherPassword() {
         textSwitcherPassword.showNext();
     }
+    
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////   MENU   //////////////////////////////////////  
+////////////////////////////////////////////////////////////////////////////////
+    
+    @OptionsItem
+    protected void menuPreferences() {
+        startActivity(new Intent(this, OIWiFiPreferences.class));
+    }
+    
 }
