@@ -1,16 +1,65 @@
 package org.openintents.wifiserver;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
+import android.view.Gravity;
+import android.widget.Toast;
 
-public class OIWiFiPreferencesActivity extends PreferenceActivity {
+import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.res.StringRes;
 
-    /* (non-Javadoc)
-     * @see android.preference.PreferenceActivity#onCreate(android.os.Bundle)
-     */
+@EActivity
+public class OIWiFiPreferencesActivity extends PreferenceActivity implements OnPreferenceChangeListener {
+    
+    @StringRes protected String prefsSSLPortKey;
+    @StringRes protected String prefsSSLPortDefault;
+    @StringRes protected String prefsPortKey;
+    @StringRes protected String prefsPortDefault;
+    
+    @StringRes protected String errorPortBoundaries;
+    @StringRes protected String errorPortDuplicate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+        getPreferenceScreen().findPreference(prefsSSLPortKey).setOnPreferenceChangeListener(this);
+        getPreferenceScreen().findPreference(prefsPortKey).setOnPreferenceChangeListener(this);
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        int port = Integer.parseInt(newValue.toString());
+        
+        if (port < 1000 || port > 65535) {
+            showToast(errorPortBoundaries);
+            return false;
+        }
+        
+        int otherPort = -1;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this); 
+                        
+        if (preference.getKey().equals(prefsPortKey)) {
+            otherPort = Integer.parseInt(sharedPreferences.getString(prefsSSLPortKey, prefsSSLPortDefault));
+        } else if (preference.getKey().equals(prefsSSLPortKey)) {
+            otherPort = Integer.parseInt(sharedPreferences.getString(prefsPortKey, prefsPortDefault));
+        }
+        
+        if (port == otherPort) {
+            showToast(errorPortDuplicate);
+            return false;
+        }
+        
+        return true;
+    }
+    
+    private void showToast(String msg) {
+        Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.show();
     }
 }

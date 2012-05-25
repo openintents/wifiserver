@@ -10,6 +10,8 @@
     <string name="startServer">Start Server</string>
     <string name="stopServer">Stop Server</string>
     <string name="preferences">Preferences</string>
+    <string name="errorPortBoundaries">Port must be between 1000 and 65535</string>
+    <string name="errorPortDuplicate">Ports for http and https connections must not be the same!</string>
     
     <string name="prefsCategoryServer">Server</string>
     <string name="prefsSSLEnableTitle">Enable SSL</string>

@@ -21,7 +21,7 @@
         </activity>
         
         <activity
-            android:name=".OIWiFiPreferencesActivity"
+            android:name=".OIWiFiPreferencesActivity_"
             android:label="@string/preferences" />
     </application>
 
