@@ -3,7 +3,11 @@
 
     <string name="app_name">OI WiFi Server</string>
     <string name="wifistatus">WiFi Status</string>
+    
+    <string name="disconnected">disconnected</string>
     <string name="connected">connected</string>
+    
+    
     <string name="url">URL</string>
     <string name="password">Password</string>
     <string name="startServer">Start Server</string>

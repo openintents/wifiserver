@@ -15,13 +15,13 @@
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
-        android:id="@+id/textWifiStatus_value"
+        android:id="@+id/textWifiStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:text="@string/connected"
+        android:text="@string/disconnected"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -35,11 +35,11 @@
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
-        android:id="@+id/textURL_value"
+        android:id="@+id/textURL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:layout_below="@id/textWifiStatus_value"
+        android:layout_below="@id/textWifiStatus"
         android:layout_alignParentRight="true"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -58,7 +58,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:layout_below="@id/textURL_value"
+        android:layout_below="@id/textURL"
         android:layout_toRightOf="@id/textPassword_label"
         android:layout_alignParentRight="true" ><TextView
             android:id="@+id/textPasswordHidden"
