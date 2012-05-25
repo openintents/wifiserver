@@ -1,20 +1,31 @@
 package org.openintents.wifiserver;
 
 import com.googlecode.androidannotations.annotations.sharedpreferences.DefaultBoolean;
+import com.googlecode.androidannotations.annotations.sharedpreferences.DefaultInt;
 import com.googlecode.androidannotations.annotations.sharedpreferences.DefaultString;
 import com.googlecode.androidannotations.annotations.sharedpreferences.SharedPref;
+import com.googlecode.androidannotations.annotations.sharedpreferences.SharedPref.Scope;
 
-@SharedPref
+/**
+ * Android Annotations wrapper for preferences. To work properly, methods must
+ * be named like keys of preferences, which are defined in
+ * values/strings_not_for_translations.xml
+ * Default values are also located in this file.
+ * 
+ * @author Stanley Förster
+ * 
+ */
+@SharedPref(value=Scope.APPLICATION_DEFAULT)
 public interface OiWiFiPreferences {
 
     @DefaultBoolean(false)
     boolean sslEnable();
     
-    @DefaultString("8081")
-    String sslPort();
+    @DefaultInt(8081)
+    int sslPort();
     
-    @DefaultString("8080")
-    String port();
+    @DefaultInt(8080)
+    int port();
     
     @DefaultBoolean(false)
     boolean passwordEnable();

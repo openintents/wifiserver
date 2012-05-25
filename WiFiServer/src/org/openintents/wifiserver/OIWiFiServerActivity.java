@@ -1,6 +1,10 @@
 package org.openintents.wifiserver;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -46,7 +50,7 @@ public class OIWiFiServerActivity extends Activity {
         mConnectivityReceiver = new ConnectivityReceiver() {
             @Override
             public void onConnectionChanged(ConnectionType type) {
-                if (type != ConnectionType.NET_WIFI) {
+                if (false && type != ConnectionType.NET_WIFI) {
                     textWifiStatus.setText(R.string.disconnected);
                     if (toggleStartStopServer.isChecked())
                         toggleStartStopServer.toggle();
@@ -102,17 +106,40 @@ public class OIWiFiServerActivity extends Activity {
         if (mWebServer == null) {
             if (prefs.sslEnable().get())
                 try {
-                    mWebServer = new WebServer(Integer.parseInt(prefs.sslPort().get()), true, getAssets().open("oi.bks"), "oenintents".toCharArray());
+                    mWebServer = new WebServer(prefs.sslPort().get(), true, getAssets().open("oi.bks"), "oenintents".toCharArray());
                 } catch (IOException e) {
                     Log.e(TAG, e.toString());
                 }
             else
-                mWebServer = new WebServer(Integer.parseInt(prefs.port().get()));
+                mWebServer = new WebServer(prefs.port().get());
         }
         mWebServer.start();
+        
+        textURL.setText(getDeviceIPAddress()+":"+mWebServer.getPort()); // TODO move to callback function
     }
 
     private void stopServer() {
-        mWebServer.stop();
+        if (mWebServer != null)
+            mWebServer.stop();
+        
+        textURL.setText(""); //TODO move to callback function
+    }
+    
+    private String getDeviceIPAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        return inetAddress.getHostAddress().toString();
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            Log.e(TAG, ex.toString());
+        }
+
+        return null;
     }
 }

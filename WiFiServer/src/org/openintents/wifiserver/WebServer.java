@@ -142,4 +142,8 @@ public class WebServer {
             e.printStackTrace();
         }
     }
+
+    public int getPort() {
+        return mPort;
+    }
 }

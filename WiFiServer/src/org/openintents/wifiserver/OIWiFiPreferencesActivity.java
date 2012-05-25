@@ -11,18 +11,21 @@ import android.widget.Toast;
 
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.res.StringRes;
+import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 
 @EActivity
 public class OIWiFiPreferencesActivity extends PreferenceActivity implements OnPreferenceChangeListener {
     
     @StringRes protected String prefsSSLPortKey;
-    @StringRes protected String prefsSSLPortDefault;
+//    @StringRes protected String prefsSSLPortDefault;
     @StringRes protected String prefsPortKey;
-    @StringRes protected String prefsPortDefault;
+//    @StringRes protected String prefsPortDefault;
     
     @StringRes protected String errorPortBoundaries;
     @StringRes protected String errorPortDuplicate;
 
+    @Pref protected OiWiFiPreferences_ prefs;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +37,7 @@ public class OIWiFiPreferencesActivity extends PreferenceActivity implements OnP
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         int port = Integer.parseInt(newValue.toString());
-        
+
         if (port < 1000 || port > 65535) {
             showToast(errorPortBoundaries);
             return false;
@@ -44,9 +47,9 @@ public class OIWiFiPreferencesActivity extends PreferenceActivity implements OnP
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this); 
                         
         if (preference.getKey().equals(prefsPortKey)) {
-            otherPort = Integer.parseInt(sharedPreferences.getString(prefsSSLPortKey, prefsSSLPortDefault));
+            otherPort = prefs.sslPort().get();
         } else if (preference.getKey().equals(prefsSSLPortKey)) {
-            otherPort = Integer.parseInt(sharedPreferences.getString(prefsPortKey, prefsPortDefault));
+            otherPort = prefs.port().get();
         }
         
         if (port == otherPort) {

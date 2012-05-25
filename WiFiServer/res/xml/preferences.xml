@@ -9,7 +9,7 @@
             android:title="@string/prefsSSLEnableTitle"
             android:summary="@string/prefsSSLEnableSummary" />
         
-        <EditTextPreference 
+        <org.openintents.wifiserver.preference.EditIntPreference 
             android:defaultValue="@string/prefsSSLPortDefault"
             android:numeric="integer"
             android:key="@string/prefsSSLPortKey"
@@ -17,7 +17,7 @@
             android:summary="@string/prefsSSLPortSummary"
             android:dependency="@string/prefsSSLEnableKey" />
         
-        <EditTextPreference 
+        <org.openintents.wifiserver.preference.EditIntPreference 
             android:defaultValue="@string/prefsPortDefault"
             android:numeric="integer"
             android:key="@string/prefsPortKey"
