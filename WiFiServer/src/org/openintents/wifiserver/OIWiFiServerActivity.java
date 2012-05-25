@@ -82,7 +82,7 @@ public class OIWiFiServerActivity extends Activity {
     
     @OptionsItem
     protected void menuPreferences() {
-        startActivity(new Intent(this, OIWiFiPreferences.class));
+        startActivity(new Intent(this, OIWiFiPreferencesActivity.class));
     }
     
 }

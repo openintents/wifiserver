@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hiddenPassword">**********</string>
+    
+    <string name="prefsSSLEnableKey">prefsSSLEnableKey</string>
+    <string name="prefsSSLEnableDefault">false</string>
+    <string name="prefsSSLPortKey">prefsSSLPortKey</string>
+    <string name="prefsSSLPortDefault">8081</string>
+    <string name="prefsPortKey">prefsPortKey</string>
+    <string name="prefsPortDefault">8080</string>
+    <string name="prefsPasswordEnableKey">prefsPasswordEnableKey</string>
+    <string name="prefsPasswordEnableDefault">false</string>
+    <string name="prefsCustomPasswordEnableKey">prefsCustomPasswordEnableKey</string>
+    <string name="prefsCustomPasswordEnableDefault">false</string>
+    <string name="prefsCustomPasswordKey">prefsCustomPasswordKey</string>
+    <string name="prefsCustomPasswordDefault">12345</string>
 </resources>

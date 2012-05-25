@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:title="@string/prefsCategoryServer" >
+    
+        <CheckBoxPreference
+            android:defaultValue="@string/prefsSSLEnableDefault"
+            android:key="@string/prefsSSLEnableKey"
+            android:title="@string/prefsSSLEnableTitle"
+            android:summary="@string/prefsSSLEnableSummary" />
+        
+        <EditTextPreference 
+            android:defaultValue="@string/prefsSSLPortDefault"
+            android:numeric="integer"
+            android:key="@string/prefsSSLPortKey"
+            android:title="@string/prefsSSLPortTitle"
+            android:summary="@string/prefsSSLPortSummary"
+            android:dependency="@string/prefsSSLEnableKey" />
+        
+        <EditTextPreference 
+            android:defaultValue="@string/prefsPortDefault"
+            android:numeric="integer"
+            android:key="@string/prefsPortKey"
+            android:title="@string/prefsPortTitle"
+            android:summary="@string/prefsPortSummary" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory 
+        android:title="@string/prefsCategoryPassword" >
+        
+        <CheckBoxPreference
+            android:defaultValue="@string/prefsPasswordEnableDefault"
+            android:key="@string/prefsPasswordEnableKey"
+            android:title="@string/prefsPasswordEnableTitle"
+            android:summary="@string/prefsPasswordEnableSummary" />
+        
+        <CheckBoxPreference 
+            android:defaultValue="@string/prefsCustomPasswordEnableDefault"
+            android:key="@string/prefsCustomPasswordEnableKey"
+            android:title="@string/prefsCustomPasswordEnableTitle"
+            android:summary="@string/prefsCustomPasswordEnableSummary"
+            android:dependency="@string/prefsPasswordEnableKey" />
+        
+        <EditTextPreference 
+            android:defaultValue="@string/prefsCustomPasswordDefault"
+            android:key="@string/prefsCustomPasswordKey"
+            android:title="@string/prefsCustomPasswordTitle"
+            android:summary="@string/prefsCustomPasswordSummary"
+            android:dependency="@string/prefsCustomPasswordEnableKey" />
+    </PreferenceCategory>    
+
+</PreferenceScreen>

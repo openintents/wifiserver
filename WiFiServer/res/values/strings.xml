@@ -10,4 +10,19 @@
     <string name="startServer">Start Server</string>
     <string name="stopServer">Stop Server</string>
     <string name="preferences">Preferences</string>
+    
+    <string name="prefsCategoryServer">Server</string>
+    <string name="prefsSSLEnableTitle">Enable SSL</string>
+    <string name="prefsSSLEnableSummary">Enables SSL to communicate via a secure https connection.</string>
+    <string name="prefsSSLPortTitle">SSL Port</string>
+    <string name="prefsSSLPortSummary">This port is used for https connections.</string>
+    <string name="prefsPortTitle">Default Port</string>
+    <string name="prefsPortSummary">This port is used for normal http connections.</string>
+    <string name="prefsCategoryPassword">Password protection</string>
+    <string name="prefsPasswordEnableTitle">Enable Password</string>
+    <string name="prefsPasswordEnableSummary">Asks the user to enter a password when connectiong to the server.</string>
+    <string name="prefsCustomPasswordEnableTitle">Custom password</string>
+    <string name="prefsCustomPasswordEnableSummary">Specify a custom password, otherwise a new one is generated when server starts.</string>
+    <string name="prefsCustomPasswordTitle">Password</string>
+    <string name="prefsCustomPasswordSummary">Set the custom password</string>
 </resources>
