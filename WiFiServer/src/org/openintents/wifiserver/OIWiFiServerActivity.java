@@ -6,6 +6,8 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+import org.openintents.wifiserver.webserver.WebServer;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;

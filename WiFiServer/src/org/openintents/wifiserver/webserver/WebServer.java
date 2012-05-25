@@ -1,4 +1,4 @@
-package org.openintents.wifiserver;
+package org.openintents.wifiserver.webserver;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +10,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -39,14 +41,23 @@ import android.util.Log;
 
 public class WebServer {
 
+    public enum Status {
+        STARTED,
+        STOPPED,
+        ERROR
+    }
+    
     private final static String TAG = WebServer.class.getSimpleName();
     private int mPort = -1;
     
     private ListeningIOReactor  mIOReactor;
     private IOEventDispatch     mIOEventDispatch; 
     
+    private List<ServerStatusListener> mListeners;
+    
     public WebServer(int port, boolean enableSSL, InputStream certFile, char[] password) {
         this.mPort = port;
+        this.mListeners = new LinkedList<ServerStatusListener>();
         
         HttpParams httpParams = new BasicHttpParams();
         httpParams.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 30000)
@@ -145,5 +156,23 @@ public class WebServer {
 
     public int getPort() {
         return mPort;
+    }
+    
+    public void addListener(ServerStatusListener listener) {
+        this.mListeners.add(listener);
+    }
+    
+    public void removeListener(ServerStatusListener listener) {
+        this.mListeners.remove(listener);
+    }
+    
+    private void statusUpdate(Status status, String msg) {
+        for (ServerStatusListener listener : mListeners) {
+            listener.onStatusChanged(status, msg);
+        }
+    }
+    
+    private void statusUpdate(Status status) {
+        this.statusUpdate(status, null);
     }
 }
