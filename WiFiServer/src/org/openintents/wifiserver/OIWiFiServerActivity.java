@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.ViewById;
 
@@ -31,7 +32,6 @@ public class OIWiFiServerActivity extends Activity {
     
     @AfterViews
     protected void onCreate() {
-        textSwitcherPassword.setEnabled(false);
         mConnectivityReceiver = new ConnectivityReceiver() {
             @Override
             public void onConnectionChanged(ConnectionType type) {
@@ -40,9 +40,11 @@ public class OIWiFiServerActivity extends Activity {
                     if (toggleStartStopServer.isChecked())
                         toggleStartStopServer.toggle();
                     toggleStartStopServer.setEnabled(false);
+                    textSwitcherPassword.setEnabled(false);
                 } else {
                     textWifiStatus.setText(R.string.connected);
                     toggleStartStopServer.setEnabled(true);
+                    textSwitcherPassword.setEnabled(true);
                 }
             }
         };
@@ -54,5 +56,19 @@ public class OIWiFiServerActivity extends Activity {
         super.onDestroy();
         if (mConnectivityReceiver != null)
             this.unregisterReceiver(mConnectivityReceiver);
+    }
+    
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////   INTERACTION   //////////////////////////////////  
+////////////////////////////////////////////////////////////////////////////////
+    
+    @Click
+    protected void toggleStartStopServer() {
+        
+    }
+    
+    @Click
+    protected void textSwitcherPassword() {
+        textSwitcherPassword.showNext();
     }
 }
