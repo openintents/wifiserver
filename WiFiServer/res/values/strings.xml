@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, OIWiFiServerActivity!</string>
     <string name="app_name">OI WiFi Server</string>
-
+    <string name="wifistatus">WiFi Status</string>
+    <string name="connected">connected</string>
+    <string name="url">URL</string>
+    <string name="password">Password</string>
+    <string name="startServer">Start Server</string>
+    <string name="stopServer">Stop Server</string>
 </resources>
