@@ -1,4 +1,8 @@
-package org.openintents.wifiserver;
+package org.openintents.wifiserver.preference;
+
+import org.openintents.wifiserver.OiWiFiPreferences_;
+import org.openintents.wifiserver.R;
+import org.openintents.wifiserver.R.xml;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

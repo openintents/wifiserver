@@ -35,7 +35,7 @@ import org.apache.http.protocol.ResponseConnControl;
 import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
-import org.openintents.wifiserver.requesthandler.FallbackPageHandler;
+import org.openintents.wifiserver.requesthandler.FallbackHandler;
 
 import android.util.Log;
 
@@ -79,7 +79,7 @@ public class WebServer {
                         httpParams);
         
         HttpRequestHandlerRegistry handlerRegistry = new HttpRequestHandlerRegistry();
-        handlerRegistry.register("*", new FallbackPageHandler());
+        handlerRegistry.register("*", new FallbackHandler());
         
         handler.setHandlerResolver(handlerRegistry);
         

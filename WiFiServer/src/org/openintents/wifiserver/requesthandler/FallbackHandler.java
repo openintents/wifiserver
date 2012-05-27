@@ -10,9 +10,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
 
-public class FallbackPageHandler implements HttpRequestHandler {
+public class FallbackHandler implements HttpRequestHandler {
 
-    private final static String TAG = FallbackPageHandler.class.getSimpleName();
+    private final static String TAG = FallbackHandler.class.getSimpleName();
 
     @Override
     public void handle(final HttpRequest request, final HttpResponse response, HttpContext context) throws HttpException, IOException {

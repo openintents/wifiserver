@@ -1,4 +1,4 @@
-package org.openintents.wifiserver;
+package org.openintents.wifiserver.preference;
 
 import com.googlecode.androidannotations.annotations.sharedpreferences.DefaultBoolean;
 import com.googlecode.androidannotations.annotations.sharedpreferences.DefaultInt;
