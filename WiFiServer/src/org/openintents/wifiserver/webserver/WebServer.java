@@ -139,11 +139,14 @@ public class WebServer {
                     mIOReactor.execute(mIOEventDispatch);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    statusUpdate(Status.ERROR, e.toString());
                 }
             }
         });
         server.setDaemon(true);
         server.start();
+        
+        statusUpdate(Status.STARTED);
     }
 
     public void stop() {
@@ -152,6 +155,8 @@ public class WebServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        statusUpdate(Status.STOPPED);
     }
 
     public int getPort() {

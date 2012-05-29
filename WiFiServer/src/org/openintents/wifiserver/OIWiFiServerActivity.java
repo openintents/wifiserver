@@ -5,8 +5,13 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.UUID;
 
+import org.openintents.wifiserver.preference.OIWiFiPreferencesActivity_;
+import org.openintents.wifiserver.preference.OiWiFiPreferences_;
+import org.openintents.wifiserver.webserver.ServerStatusListener;
 import org.openintents.wifiserver.webserver.WebServer;
+import org.openintents.wifiserver.webserver.WebServer.Status;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +20,7 @@ import android.net.ConnectivityManager;
 import android.util.Log;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
@@ -52,15 +58,10 @@ public class OIWiFiServerActivity extends Activity {
         mConnectivityReceiver = new ConnectivityReceiver() {
             @Override
             public void onConnectionChanged(ConnectionType type) {
-                if (false && type != ConnectionType.NET_WIFI) {
-                    textWifiStatus.setText(R.string.disconnected);
-                    if (toggleStartStopServer.isChecked())
-                        toggleStartStopServer.toggle();
-                    toggleStartStopServer.setEnabled(false);
-                } else {
-                    textWifiStatus.setText(R.string.connected);
-                    toggleStartStopServer.setEnabled(true);
-                }
+                if (type != ConnectionType.NET_WIFI)
+                    wifiDisconnected();
+                else
+                    wifiConnected();
             }
         };
         this.registerReceiver(mConnectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -74,6 +75,18 @@ public class OIWiFiServerActivity extends Activity {
             this.unregisterReceiver(mConnectivityReceiver);
     }
     
+    private void wifiDisconnected() {
+        textWifiStatus.setText(R.string.disconnected);
+        if (toggleStartStopServer.isChecked())
+            toggleStartStopServer.toggle();
+        toggleStartStopServer.setEnabled(false);
+        stopServer();
+    }
+    
+    private void wifiConnected() {
+        textWifiStatus.setText(R.string.connected);
+        toggleStartStopServer.setEnabled(true);
+    }
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////   INTERACTION   //////////////////////////////////  
 ////////////////////////////////////////////////////////////////////////////////
@@ -105,26 +118,70 @@ public class OIWiFiServerActivity extends Activity {
 ////////////////////////////////////////////////////////////////////////////////
     
     private void startServer() {
+        if (prefs.passwordEnable().get() && !prefs.customPasswordEnable().get()) {
+            prefs.edit().randomPassword().put(UUID.randomUUID().toString().substring(0, 8)).apply();
+        }
+        
         if (mWebServer == null) {
             if (prefs.sslEnable().get())
                 try {
-                    mWebServer = new WebServer(prefs.sslPort().get(), true, getAssets().open("oi.bks"), "oenintents".toCharArray());
+                    mWebServer = new WebServer(prefs.sslPort().get(), true, getAssets().open("oi.bks"), "openintents".toCharArray());
                 } catch (IOException e) {
                     Log.e(TAG, e.toString());
                 }
             else
                 mWebServer = new WebServer(prefs.port().get());
+            
+            mWebServer.addListener(new ServerStatusListener() {
+                
+                @Override
+                public void onStatusChanged(Status status, String msg) {
+                    switch (status) {
+                        case ERROR: Toast.makeText(OIWiFiServerActivity.this, "Server Error: "+msg, Toast.LENGTH_LONG).show(); break;
+                        case STARTED: serverStarted(); break;
+                        case STOPPED: serverStopped();    
+                    }
+                }
+            });
         }
-        mWebServer.start();
         
-        textURL.setText(getDeviceIPAddress()+":"+mWebServer.getPort()); // TODO move to callback function
+        mWebServer.start();
     }
 
     private void stopServer() {
         if (mWebServer != null)
             mWebServer.stop();
+        mWebServer = null;
+    }
+    
+    private void serverStopped() {
+        toggleStartStopServer.setChecked(false);
+        textSwitcherPassword.setEnabled(false);
+        textURL.setText("");
+    }
+    
+    private void serverStarted() {
         
-        textURL.setText(""); //TODO move to callback function
+        textURL.setText(buildURLString());
+
+        if (prefs.passwordEnable().get()) {
+            textSwitcherPassword.setEnabled(true);
+            
+            if (prefs.customPasswordEnable().get()) {
+                textPasswordShown.setText(prefs.customPassword().get());
+            } else {
+                textPasswordShown.setText(prefs.randomPassword().get());
+            }
+        }
+    }
+    
+    
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////   UTIL   //////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////    
+    
+    private String buildURLString() {
+        return (prefs.sslEnable().get() ? "https" : "http") + "://" + getDeviceIPAddress()+":"+mWebServer.getPort();
     }
     
     private String getDeviceIPAddress() {
