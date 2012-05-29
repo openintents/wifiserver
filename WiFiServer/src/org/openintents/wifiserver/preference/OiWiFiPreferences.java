@@ -7,10 +7,11 @@ import com.googlecode.androidannotations.annotations.sharedpreferences.SharedPre
 import com.googlecode.androidannotations.annotations.sharedpreferences.SharedPref.Scope;
 
 /**
- * Android Annotations wrapper for preferences. To work properly, methods must
- * be named like keys of preferences, which are defined in
- * values/strings_not_for_translations.xml
- * Default values are also located in this file.
+ * Android Annotations wrapper for preferences. If a preference should appear in
+ * preference activity and should still be accessible through this interface,
+ * methods must be named like keys of preferences, which are defined in
+ * values/strings_not_for_translations.xml. Default values are also located in
+ * this file.
  * 
  * @author Stanley Förster
  * 
@@ -35,4 +36,6 @@ public interface OiWiFiPreferences {
     
     @DefaultString("12345")
     String customPassword();
+    
+    String randomPassword();
 }

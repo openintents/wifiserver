@@ -1,8 +1,6 @@
 package org.openintents.wifiserver.preference;
 
-import org.openintents.wifiserver.OiWiFiPreferences_;
 import org.openintents.wifiserver.R;
-import org.openintents.wifiserver.R.xml;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,9 +19,7 @@ import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 public class OIWiFiPreferencesActivity extends PreferenceActivity implements OnPreferenceChangeListener {
     
     @StringRes protected String prefsSSLPortKey;
-//    @StringRes protected String prefsSSLPortDefault;
     @StringRes protected String prefsPortKey;
-//    @StringRes protected String prefsPortDefault;
     
     @StringRes protected String errorPortBoundaries;
     @StringRes protected String errorPortDuplicate;
