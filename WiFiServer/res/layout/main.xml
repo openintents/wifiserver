@@ -55,25 +55,26 @@
     
     <TextSwitcher
         android:id="@+id/textSwitcherPassword"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_below="@id/textURL"
         android:layout_toRightOf="@id/textPassword_label"
-        android:layout_alignParentRight="true" ><TextView
+        android:layout_alignParentRight="true" >
+
+        <TextView
             android:id="@+id/textPasswordHidden"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_margin="5dp"
             android:text="@string/hiddenPassword"
             android:textAppearance="?android:attr/textAppearanceSmall" />
         
         <TextView
             android:id="@+id/textPasswordShown"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_gravity="right"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </TextSwitcher>
     
