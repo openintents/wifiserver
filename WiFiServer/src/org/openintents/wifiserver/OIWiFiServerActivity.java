@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import org.openintents.wifiserver.preference.OIWiFiPreferencesActivity_;
 import org.openintents.wifiserver.preference.OiWiFiPreferences_;
+import org.openintents.wifiserver.requesthandler.FallbackHandler;
+import org.openintents.wifiserver.requesthandler.HttpMethodTestHandler;
 import org.openintents.wifiserver.webserver.ServerStatusListener;
 import org.openintents.wifiserver.webserver.WebServer;
 import org.openintents.wifiserver.webserver.WebServer.Status;
@@ -132,6 +134,8 @@ public class OIWiFiServerActivity extends Activity {
             else
                 mWebServer = new WebServer(prefs.port().get());
             
+            mWebServer.registerRequestHandler("*", new FallbackHandler());
+            mWebServer.registerRequestHandler("/test*", new HttpMethodTestHandler(getAssets()));
             mWebServer.addListener(new ServerStatusListener() {
                 
                 @Override

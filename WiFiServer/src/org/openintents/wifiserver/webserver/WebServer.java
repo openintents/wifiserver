@@ -30,12 +30,14 @@ import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpProcessor;
+import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.http.protocol.HttpRequestHandlerRegistry;
 import org.apache.http.protocol.ResponseConnControl;
 import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
 import org.openintents.wifiserver.requesthandler.FallbackHandler;
+import org.openintents.wifiserver.requesthandler.HttpMethodTestHandler;
 
 import android.util.Log;
 
@@ -47,12 +49,13 @@ public class WebServer {
         ERROR
     }
     
-    private final static String TAG = WebServer.class.getSimpleName();
-    private int mPort = -1;
-    
-    private ListeningIOReactor  mIOReactor;
-    private IOEventDispatch     mIOEventDispatch; 
-    
+    private final static String        TAG   = WebServer.class.getSimpleName();
+    private int                        mPort = -1;
+
+    private ListeningIOReactor         mIOReactor;
+    private IOEventDispatch            mIOEventDispatch;
+    private HttpRequestHandlerRegistry mHandlerRegistry;
+
     private List<ServerStatusListener> mListeners;
     
     public WebServer(int port, boolean enableSSL, InputStream certFile, char[] password) {
@@ -78,10 +81,9 @@ public class WebServer {
                         new DefaultConnectionReuseStrategy(), 
                         httpParams);
         
-        HttpRequestHandlerRegistry handlerRegistry = new HttpRequestHandlerRegistry();
-        handlerRegistry.register("*", new FallbackHandler());
+        mHandlerRegistry = new HttpRequestHandlerRegistry();
         
-        handler.setHandlerResolver(handlerRegistry);
+        handler.setHandlerResolver(mHandlerRegistry);
         
         if (enableSSL) {
             mIOEventDispatch = new SSLServerIOEventDispatch(handler, createSSLContext(certFile, password), httpParams);
@@ -94,6 +96,10 @@ public class WebServer {
         } catch (IOReactorException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void registerRequestHandler(String urlPattern, HttpRequestHandler handler) {
+        mHandlerRegistry.register(urlPattern, handler);
     }
     
     public WebServer(int port) {
