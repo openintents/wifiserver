@@ -135,9 +135,8 @@ public class OIWiFiServerActivity extends Activity {
                 mWebServer = new WebServer(prefs.port().get());
             
             mWebServer.registerRequestHandler("*", new FallbackHandler());
-            mWebServer.registerRequestHandler("/test*", new HttpMethodTestHandler(getAssets()));
+            mWebServer.registerRequestHandler("/test/methods*", new HttpMethodTestHandler());
             mWebServer.addListener(new ServerStatusListener() {
-                
                 @Override
                 public void onStatusChanged(Status status, String msg) {
                     switch (status) {
