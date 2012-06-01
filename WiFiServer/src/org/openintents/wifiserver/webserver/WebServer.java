@@ -16,6 +16,7 @@ import java.util.List;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.DefaultHttpResponseFactory;
 import org.apache.http.impl.nio.DefaultServerIOEventDispatch;
@@ -37,7 +38,6 @@ import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
 import org.openintents.wifiserver.requesthandler.FallbackHandler;
-import org.openintents.wifiserver.requesthandler.HttpMethodTestHandler;
 
 import android.util.Log;
 
@@ -55,7 +55,7 @@ public class WebServer {
     private ListeningIOReactor         mIOReactor;
     private IOEventDispatch            mIOEventDispatch;
     private HttpRequestHandlerRegistry mHandlerRegistry;
-
+    private BasicHttpProcessor         mHttpProcessor;
     private List<ServerStatusListener> mListeners;
     
     public WebServer(int port, boolean enableSSL, InputStream certFile, char[] password) {
@@ -69,20 +69,19 @@ public class WebServer {
             .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true)
             .setParameter(CoreProtocolPNames.ORIGIN_SERVER, "OI Server");
         
-        BasicHttpProcessor httpProcessor = new BasicHttpProcessor();
-        httpProcessor.addInterceptor(new ResponseDate());
-        httpProcessor.addInterceptor(new ResponseServer());
-        httpProcessor.addInterceptor(new ResponseContent());
-        httpProcessor.addInterceptor(new ResponseConnControl());
+        mHttpProcessor = new BasicHttpProcessor();
+        mHttpProcessor.addInterceptor(new ResponseDate());
+        mHttpProcessor.addInterceptor(new ResponseServer());
+        mHttpProcessor.addInterceptor(new ResponseContent());
+        mHttpProcessor.addInterceptor(new ResponseConnControl());
 
         BufferingHttpServiceHandler handler = new BufferingHttpServiceHandler(
-                        httpProcessor, 
+                        mHttpProcessor, 
                         new DefaultHttpResponseFactory(), 
                         new DefaultConnectionReuseStrategy(), 
                         httpParams);
         
         mHandlerRegistry = new HttpRequestHandlerRegistry();
-        
         handler.setHandlerResolver(mHandlerRegistry);
         
         if (enableSSL) {
@@ -96,6 +95,10 @@ public class WebServer {
         } catch (IOReactorException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void addRequestInterceptor(HttpRequestInterceptor interceptor) {
+        mHttpProcessor.addInterceptor(interceptor);
     }
     
     public void registerRequestHandler(String urlPattern, HttpRequestHandler handler) {

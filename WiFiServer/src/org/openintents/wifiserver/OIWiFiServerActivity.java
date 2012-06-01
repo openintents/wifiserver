@@ -134,6 +134,15 @@ public class OIWiFiServerActivity extends Activity {
             else
                 mWebServer = new WebServer(prefs.port().get());
             
+            if (prefs.passwordEnable().get()) {
+                if (prefs.customPasswordEnable().get())
+                    mWebServer.addRequestInterceptor(new AuthenticationInterceptor(prefs.customPassword().get()));
+                else {
+                    prefs.edit().randomPassword().put(UUID.randomUUID().toString().substring(0, 8));
+                    mWebServer.addRequestInterceptor(new AuthenticationInterceptor(prefs.randomPassword().get()));
+                }
+            }
+            
             mWebServer.registerRequestHandler("*", new FallbackHandler());
             mWebServer.registerRequestHandler("/test/methods*", new HttpMethodTestHandler());
             mWebServer.addListener(new ServerStatusListener() {
