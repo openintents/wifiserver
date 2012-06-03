@@ -37,7 +37,6 @@ import org.apache.http.protocol.ResponseConnControl;
 import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
-import org.openintents.wifiserver.requesthandler.FallbackHandler;
 
 import android.util.Log;
 
@@ -80,7 +79,7 @@ public class WebServer {
                         new DefaultHttpResponseFactory(), 
                         new DefaultConnectionReuseStrategy(), 
                         httpParams);
-        
+
         mHandlerRegistry = new HttpRequestHandlerRegistry();
         handler.setHandlerResolver(mHandlerRegistry);
         
@@ -123,17 +122,17 @@ public class WebServer {
             sslContext = SSLContext.getInstance("SSL");
             sslContext.init(kmf.getKeyManagers(), null, new SecureRandom());
         } catch (KeyStoreException e) {
-            Log.e(TAG, "Failed to create serversocket due to: " + e.toString());
+            Log.e(TAG, "There was an error with the keystore!", e);
         } catch (NoSuchAlgorithmException e) {
-            Log.e(TAG, "Failed to create serversocket due to: " + e.toString());
+            Log.e(TAG, "No such algorithm!", e);
         } catch (CertificateException e) {
-            Log.e(TAG, "Failed to create serversocket due to: " + e.toString());
+            Log.e(TAG, "Failed to initialize keystore!", e);
         } catch (IOException e) {
-            Log.e(TAG, "Failed to create serversocket due to: " + e.toString());
+            Log.e(TAG, "Failed to read certification file!", e);
         } catch (UnrecoverableKeyException e) {
-            Log.e(TAG, "Failed to create serversocket due to: " + e.toString());
+            Log.e(TAG, "Failed to init key manager factory!", e);
         } catch (KeyManagementException e) {
-            Log.e(TAG, "Failed to create serversocket due to: " + e.toString());
+            Log.e(TAG, "Failed to init ssl context!", e);
         }
         
         return sslContext;
@@ -143,6 +142,7 @@ public class WebServer {
         Thread server = new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG, "Server thread started");
                 try {
                     mIOReactor.listen(new InetSocketAddress(mPort));
                     mIOReactor.execute(mIOEventDispatch);
@@ -150,6 +150,7 @@ public class WebServer {
                     e.printStackTrace();
                     statusUpdate(Status.ERROR, e.toString());
                 }
+                Log.d(TAG, "Server thread stopped");
             }
         });
         server.setDaemon(true);
