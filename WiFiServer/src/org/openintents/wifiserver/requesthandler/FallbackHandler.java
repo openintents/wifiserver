@@ -16,18 +16,9 @@ public class FallbackHandler implements HttpRequestHandler {
 
     @Override
     public void handle(final HttpRequest request, final HttpResponse response, HttpContext context) throws HttpException, IOException {
-        Object authAttribute = context.getAttribute("authenticated");
-
-        if (authAttribute == null || (authAttribute instanceof Boolean && ((Boolean) authAttribute).booleanValue())) {
-            AbstractHttpEntity entity = new StringEntity("404 Not Found");
-            entity.setContentType("text/plain");
-            response.setEntity(entity);
-            response.setStatusCode(404);
-        } else {
-            AbstractHttpEntity entity = new StringEntity("401 Unauthorized");
-            entity.setContentType("text/plain");
-            response.setEntity(entity);
-            response.setStatusCode(401);
-        }
+        AbstractHttpEntity entity = new StringEntity("404 Not Found");
+        entity.setContentType("text/plain");
+        response.setEntity(entity);
+        response.setStatusCode(404);
     }
 }
