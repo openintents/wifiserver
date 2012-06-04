@@ -11,6 +11,7 @@ import org.openintents.wifiserver.preference.OIWiFiPreferencesActivity_;
 import org.openintents.wifiserver.preference.OiWiFiPreferences_;
 import org.openintents.wifiserver.requesthandler.FallbackHandler;
 import org.openintents.wifiserver.requesthandler.HttpMethodTestHandler;
+import org.openintents.wifiserver.requesthandler.notes.GetNote;
 import org.openintents.wifiserver.webserver.ServerStatusListener;
 import org.openintents.wifiserver.webserver.WebServer;
 import org.openintents.wifiserver.webserver.WebServer.Status;
@@ -145,6 +146,8 @@ public class OIWiFiServerActivity extends Activity {
             
             mWebServer.registerRequestHandler("*", new FallbackHandler());
             mWebServer.registerRequestHandler("/test/methods*", new HttpMethodTestHandler());
+            mWebServer.registerRequestHandler("/notes/get*", new GetNote(this));
+
             mWebServer.addListener(new ServerStatusListener() {
                 @Override
                 public void onStatusChanged(Status status, String msg) {
