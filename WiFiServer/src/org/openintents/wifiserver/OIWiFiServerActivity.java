@@ -9,7 +9,7 @@ import java.util.UUID;
 
 import org.openintents.wifiserver.preference.OIWiFiPreferencesActivity_;
 import org.openintents.wifiserver.preference.OiWiFiPreferences_;
-import org.openintents.wifiserver.requesthandler.FallbackHandler;
+import org.openintents.wifiserver.requesthandler.FileHandler;
 import org.openintents.wifiserver.requesthandler.HttpMethodTestHandler;
 import org.openintents.wifiserver.requesthandler.notes.DeleteNote;
 import org.openintents.wifiserver.requesthandler.notes.GetNote;
@@ -145,7 +145,7 @@ public class OIWiFiServerActivity extends Activity {
                 }
             }
             
-            mWebServer.registerRequestHandler("*", new FallbackHandler());
+            mWebServer.registerRequestHandler("*", new FileHandler(this.getAssets()));
             mWebServer.registerRequestHandler("/test/methods*", new HttpMethodTestHandler());
             mWebServer.registerRequestHandler("/notes/get*", new GetNote(this));
             mWebServer.registerRequestHandler("/notes/delete*", new DeleteNote(this));
