@@ -53,6 +53,8 @@ public class GetNote extends NotesHandler {
                 Log.e(TAG, "Failed to create entity!", e);
                 response.setStatusCode(500);
             }
+
+            notesCursor.close();
         } else {
             Cursor notesCursor = mContext.getContentResolver().query(mNotesURI, null, "_id = ?", new String[] { id }, null);
             if (!notesCursor.moveToFirst()) {
