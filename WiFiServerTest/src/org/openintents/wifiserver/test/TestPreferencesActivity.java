@@ -77,10 +77,10 @@ public class TestPreferencesActivity extends InstrumentationTestCase {
      */
     private void clickPreferenceDialogOKButton() {
         try {
-            solo.clickOnButton(0);
+            solo.clickOnButton(getString(android.R.string.ok));
         } catch (AssertionFailedError e) {
             solo.goBack();
-            solo.clickOnButton(0);
+            solo.clickOnButton(getString(android.R.string.ok));
         }
     }
     
