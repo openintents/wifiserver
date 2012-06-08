@@ -43,7 +43,7 @@ public class FileHandler implements HttpRequestHandler {
             response.setStatusCode(200);
             return;
         } catch (IOException e) {
-            Log.e(TAG, "Can't open file "+path, e);
+            Log.e(TAG, e.getMessage());
             
             entity = new StringEntity("404 Not Found");
             entity.setContentType("text/plain");
