@@ -23,7 +23,7 @@ public class DeleteNote extends NotesHandler {
         String id = URLUtil.getParameter(request.getRequestLine().getUri(), "id");
 
         if (id == null) {
-            response.setStatusCode(400);
+            mContext.getContentResolver().delete(mNotesURI, null, null);
         } else {
             mContext.getContentResolver().delete(mNotesURI, "_id = ?", new String[] { id });
         }
