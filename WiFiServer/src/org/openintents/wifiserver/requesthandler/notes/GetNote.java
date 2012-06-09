@@ -28,7 +28,7 @@ public class GetNote extends NotesHandler {
     public void getResponse(HttpRequest request, HttpResponse response, HttpContext context) {
         if (!"GET".equals(request.getRequestLine().getMethod())) {
             response.setStatusCode(405);
-            return ;
+            return;
         }
 
         String id = URLUtil.getParameter(request.getRequestLine().getUri(), "id");

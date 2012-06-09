@@ -13,6 +13,7 @@ import org.openintents.wifiserver.requesthandler.FileHandler;
 import org.openintents.wifiserver.requesthandler.HttpMethodTestHandler;
 import org.openintents.wifiserver.requesthandler.notes.DeleteNote;
 import org.openintents.wifiserver.requesthandler.notes.GetNote;
+import org.openintents.wifiserver.requesthandler.notes.NewNote;
 import org.openintents.wifiserver.webserver.ServerStatusListener;
 import org.openintents.wifiserver.webserver.WebServer;
 import org.openintents.wifiserver.webserver.WebServer.Status;
@@ -40,23 +41,23 @@ import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 public class OIWiFiServerActivity extends Activity {
 
     private final static String  TAG                       = OIWiFiServerActivity.class.getSimpleName();
-    
+
     @ViewById protected TextView     textWifiStatus;
     @ViewById protected TextView     textURL;
     @ViewById protected TextView     textPasswordShown;
     @ViewById protected TextSwitcher textSwitcherPassword;
     @ViewById protected ToggleButton toggleStartStopServer;
-    
+
     @Pref protected OiWiFiPreferences_ prefs;
 
     private ConnectivityReceiver mConnectivityReceiver     = null;
     private WebServer mWebServer = null;
 
-    
+
 ////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   LIVECYCLE   ///////////////////////////////////  
+//////////////////////////////   LIVECYCLE   ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-    
+
     @AfterViews
     protected void onCreate() {
         mConnectivityReceiver = new ConnectivityReceiver() {
@@ -70,7 +71,7 @@ public class OIWiFiServerActivity extends Activity {
         };
         this.registerReceiver(mConnectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -78,7 +79,7 @@ public class OIWiFiServerActivity extends Activity {
         if (mConnectivityReceiver != null)
             this.unregisterReceiver(mConnectivityReceiver);
     }
-    
+
     private void wifiDisconnected() {
         textWifiStatus.setText(R.string.disconnected);
         if (toggleStartStopServer.isChecked())
@@ -86,15 +87,15 @@ public class OIWiFiServerActivity extends Activity {
         toggleStartStopServer.setEnabled(false);
         stopServer();
     }
-    
+
     private void wifiConnected() {
         textWifiStatus.setText(R.string.connected);
         toggleStartStopServer.setEnabled(true);
     }
 ////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////   INTERACTION   //////////////////////////////////  
+/////////////////////////////   INTERACTION   //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-    
+
     @Click
     protected void toggleStartStopServer() {
         if (toggleStartStopServer.isChecked())
@@ -102,16 +103,16 @@ public class OIWiFiServerActivity extends Activity {
         else
             stopServer();
     }
-    
+
     @Click
     protected void textSwitcherPassword() {
         textSwitcherPassword.showNext();
     }
-    
+
 ////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////   MENU   //////////////////////////////////////  
+////////////////////////////////   MENU   //////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-    
+
     @OptionsItem
     protected void menuPreferences() {
         startActivity(new Intent(this, OIWiFiPreferencesActivity_.class));
@@ -120,12 +121,12 @@ public class OIWiFiServerActivity extends Activity {
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////   SERVER   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-    
+
     private void startServer() {
         if (prefs.passwordEnable().get() && !prefs.customPasswordEnable().get()) {
             prefs.edit().randomPassword().put(UUID.randomUUID().toString().substring(0, 8)).apply();
         }
-        
+
         if (mWebServer == null) {
             if (prefs.sslEnable().get())
                 try {
@@ -135,7 +136,7 @@ public class OIWiFiServerActivity extends Activity {
                 }
             else
                 mWebServer = new WebServer(prefs.port().get());
-            
+
             if (prefs.passwordEnable().get()) {
                 if (prefs.customPasswordEnable().get())
                     mWebServer.addRequestInterceptor(new AuthenticationInterceptor(prefs.customPassword().get()));
@@ -144,11 +145,12 @@ public class OIWiFiServerActivity extends Activity {
                     mWebServer.addRequestInterceptor(new AuthenticationInterceptor(prefs.randomPassword().get()));
                 }
             }
-            
+
             mWebServer.registerRequestHandler("*", new FileHandler(this.getAssets()));
             mWebServer.registerRequestHandler("/test/methods*", new HttpMethodTestHandler());
             mWebServer.registerRequestHandler("/notes/get*", new GetNote(this));
             mWebServer.registerRequestHandler("/notes/delete*", new DeleteNote(this));
+            mWebServer.registerRequestHandler("/notes/new*", new NewNote(this));
 
             mWebServer.addListener(new ServerStatusListener() {
                 @Override
@@ -156,12 +158,12 @@ public class OIWiFiServerActivity extends Activity {
                     switch (status) {
                         case ERROR: Toast.makeText(OIWiFiServerActivity.this, "Server Error: "+msg, Toast.LENGTH_LONG).show(); break;
                         case STARTED: serverStarted(); break;
-                        case STOPPED: serverStopped();    
+                        case STOPPED: serverStopped();
                     }
                 }
             });
         }
-        
+
         mWebServer.start();
     }
 
@@ -170,20 +172,20 @@ public class OIWiFiServerActivity extends Activity {
             mWebServer.stop();
         mWebServer = null;
     }
-    
+
     private void serverStopped() {
         toggleStartStopServer.setChecked(false);
         textSwitcherPassword.setEnabled(false);
         textURL.setText("");
     }
-    
+
     private void serverStarted() {
-        
+
         textURL.setText(buildURLString());
 
         if (prefs.passwordEnable().get()) {
             textSwitcherPassword.setEnabled(true);
-            
+
             if (prefs.customPasswordEnable().get()) {
                 textPasswordShown.setText(prefs.customPassword().get());
             } else {
@@ -191,16 +193,16 @@ public class OIWiFiServerActivity extends Activity {
             }
         }
     }
-    
-    
+
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////   UTIL   //////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////    
-    
+////////////////////////////////////////////////////////////////////////////////
+
     private String buildURLString() {
         return (prefs.sslEnable().get() ? "https" : "http") + "://" + getDeviceIPAddress()+":"+mWebServer.getPort();
     }
-    
+
     private String getDeviceIPAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
