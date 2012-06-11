@@ -33,6 +33,7 @@ public class NewNote extends NotesHandler {
 
             String title = null;
             String note = null;
+            String tags = null;
 
             List<NameValuePair> postParams;
             try {
@@ -49,6 +50,8 @@ public class NewNote extends NotesHandler {
                     note = nvp.getValue();
                 if ("title".equals(nvp.getName()))
                     title = nvp.getValue();
+                if ("tags".equals(nvp.getName()))
+                    tags = nvp.getValue();
             }
 
             if (title == null || note == null) {
@@ -60,7 +63,9 @@ public class NewNote extends NotesHandler {
             values.put("created", new Long(System.currentTimeMillis()));
             values.put("title", title);
             values.put("note", note);
-
+            if (tags != null) {
+                values.put("tags", tags);
+            }
             // prevent notepad app from throwing IndexOutOfBoundsException
             values.put("selection_start", new Long(0));
             values.put("selection_end", new Long(0));
