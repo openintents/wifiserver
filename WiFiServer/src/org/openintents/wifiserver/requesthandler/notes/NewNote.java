@@ -46,7 +46,7 @@ public class NewNote extends NotesHandler {
 
             for (NameValuePair nvp : postParams) {
                 Log.d(TAG, "("+nvp.getName()+"|"+nvp.getValue()+")");
-                if ("text".equals(nvp.getName()))
+                if ("note".equals(nvp.getName()))
                     note = nvp.getValue();
                 if ("title".equals(nvp.getName()))
                     title = nvp.getValue();
@@ -56,6 +56,7 @@ public class NewNote extends NotesHandler {
 
             if (title == null || note == null) {
                 response.setStatusCode(400);
+                return;
             }
 
             ContentValues values = new ContentValues();
@@ -73,5 +74,4 @@ public class NewNote extends NotesHandler {
             mContext.getContentResolver().insert(mNotesURI, values);
         }
     }
-
 }
