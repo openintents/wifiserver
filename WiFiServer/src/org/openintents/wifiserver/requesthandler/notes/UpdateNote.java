@@ -53,11 +53,11 @@ public class UpdateNote extends NotesHandler {
                     title = nvp.getValue();
                 if ("tags".equals(nvp.getName()))
                     tags = nvp.getValue();
-                if ("id".equals(nvp.getName()))
+                if ("_id".equals(nvp.getName()))
                     id = nvp.getValue();
             }
 
-            if (title == null || note == null) {
+            if (id == null || title == null || note == null) {
                 response.setStatusCode(400);
                 return;
             }
