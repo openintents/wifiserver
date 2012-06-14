@@ -35,11 +35,11 @@ public class GetNote extends NotesHandler {
 
         if (id == null) {
             Cursor notesCursor = mContext.getContentResolver().query(mNotesURI, PROJECTION, null, null, null);
-            if (!notesCursor.moveToFirst()) {
-                response.setStatusCode(404);
-                notesCursor.close();
-                return;
-            }
+//            if (!notesCursor.moveToFirst()) {
+//                response.setStatusCode(404);
+//                notesCursor.close();
+//                return;
+//            }
 
             try {
                 AbstractHttpEntity entity = new StringEntity(notesToJSONArray(notesCursor).toString());
@@ -100,9 +100,10 @@ public class GetNote extends NotesHandler {
     protected JSONArray notesToJSONArray(Cursor notesCursor) throws JSONException {
         JSONArray array = new JSONArray();
 
-        do {
-            array.put(noteToJSONObject(notesCursor));
-        } while (notesCursor.moveToNext());
+        if (notesCursor.moveToFirst())
+            do {
+                array.put(noteToJSONObject(notesCursor));
+            } while (notesCursor.moveToNext());
 
         return array;
     }
