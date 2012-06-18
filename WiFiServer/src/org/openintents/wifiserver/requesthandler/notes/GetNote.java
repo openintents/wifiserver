@@ -35,11 +35,6 @@ public class GetNote extends NotesHandler {
 
         if (id == null) {
             Cursor notesCursor = mContext.getContentResolver().query(mNotesURI, PROJECTION, null, null, null);
-//            if (!notesCursor.moveToFirst()) {
-//                response.setStatusCode(404);
-//                notesCursor.close();
-//                return;
-//            }
 
             try {
                 AbstractHttpEntity entity = new StringEntity(notesToJSONArray(notesCursor).toString());
@@ -50,7 +45,7 @@ public class GetNote extends NotesHandler {
                 response.setStatusCode(500);
             } catch (JSONException e) {
                 Log.e(TAG, "Failed to create JSON Array", e);
-                e.printStackTrace();
+                response.setStatusCode(500);
             }
 
             notesCursor.close();
@@ -71,7 +66,7 @@ public class GetNote extends NotesHandler {
                 response.setStatusCode(500);
             } catch (JSONException e) {
                 Log.e(TAG, "Failed to create JSON Object", e);
-                e.printStackTrace();
+                response.setStatusCode(500);
             }
         }
     }
