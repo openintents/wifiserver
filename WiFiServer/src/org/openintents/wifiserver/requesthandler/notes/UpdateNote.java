@@ -46,7 +46,6 @@ public class UpdateNote extends NotesHandler {
             }
 
             for (NameValuePair nvp : postParams) {
-                Log.d(TAG, "("+nvp.getName()+"|"+nvp.getValue()+")");
                 if ("note".equals(nvp.getName()))
                     note = nvp.getValue();
                 if ("title".equals(nvp.getName()))
