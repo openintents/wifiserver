@@ -2,7 +2,10 @@ package org.openintents.wifiserver.test;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.http.HttpResponse;
@@ -32,54 +35,66 @@ public class TestNotesInterface extends InstrumentationTestCase {
     private Solo solo;
     private static final String TAG = TestNotesInterface.class.getSimpleName();
     private Activity activity;
-    
+
     private Random rand = new Random();
-    
+
     private String getString(int resId) {
         return activity.getString(resId);
     }
-    
+
     private void startServer() {
-        solo.assertCurrentActivity("Expected "+OIWiFiServerActivity_.class.getSimpleName()+" activity!", OIWiFiServerActivity_.class);
+        solo.assertCurrentActivity(
+                "Expected " + OIWiFiServerActivity_.class.getSimpleName()
+                        + " activity!", OIWiFiServerActivity_.class);
         if (solo.searchToggleButton(getString(R.string.startServer))) {
             solo.clickOnToggleButton(getString(R.string.startServer));
             solo.waitForText(getString(R.string.stopServer));
         }
+
     }
-    
+
     private void stopServer() {
-        solo.assertCurrentActivity("Expected "+OIWiFiServerActivity_.class.getSimpleName()+" activity!", OIWiFiServerActivity_.class);
+        solo.assertCurrentActivity(
+                "Expected " + OIWiFiServerActivity_.class.getSimpleName()
+                        + " activity!", OIWiFiServerActivity_.class);
         if (solo.searchToggleButton(getString(R.string.stopServer))) {
             solo.clickOnToggleButton(getString(R.string.stopServer));
             solo.waitForText(getString(R.string.startServer));
         }
     }
-    
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+
+    private void startWiFiActivity() {
         Intent i = new Intent();
         i.setAction("android.intent.action.MAIN");
-        i.setClassName(OIWiFiServerActivity_.class.getPackage().getName(), OIWiFiServerActivity_.class.getCanonicalName());
+        i.setClassName(OIWiFiServerActivity_.class.getPackage().getName(),
+                OIWiFiServerActivity_.class.getCanonicalName());
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         activity = getInstrumentation().startActivitySync(i);
 
         this.solo = new Solo(getInstrumentation(), activity);
-        
-        startServer();
     }
-    
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        startWiFiActivity();
+        startServer();
+
+        deleteAllNotes();
+    }
+
     @Override
     protected void tearDown() {
         stopServer();
         solo.finishOpenedActivities();
     }
-    
+
     private HttpResponse doGet(String url) {
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(url);
-        
+
         try {
             HttpResponse response = client.execute(request);
             return response;
@@ -88,16 +103,22 @@ public class TestNotesInterface extends InstrumentationTestCase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         return null;
     }
-    
-    private HttpResponse doPost(String url, NameValuePair... nameValuePairs) {
+
+    private HttpResponse doPost(String url, Map<String, String> parameters) {
         HttpClient client = new DefaultHttpClient();
         HttpPost request = new HttpPost(url);
-        
+
+        List<NameValuePair> nvpList = new ArrayList<NameValuePair>(
+                parameters.size());
+        for (String key : parameters.keySet()) {
+            nvpList.add(new BasicNameValuePair(key, parameters.get(key)));
+        }
+
         try {
-            request.setEntity(new UrlEncodedFormEntity(Arrays.asList(nameValuePairs)));
+            request.setEntity(new UrlEncodedFormEntity(nvpList));
             HttpResponse response = client.execute(request);
             return response;
         } catch (UnsupportedEncodingException e) {
@@ -107,105 +128,141 @@ public class TestNotesInterface extends InstrumentationTestCase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         return null;
     }
-    
+
+    private HttpResponse deleteAllNotes() {
+        return doGet("http://127.0.0.1:8080/notes/delete");
+    }
+
+    private HttpResponse deleteNote(int id) {
+        return doGet("http://127.0.0.1:8080/notes/delete?id=" + id);
+    }
+
+    private HttpResponse getAllNotes() {
+        return doGet("http://127.0.0.1:8080/notes/get");
+    }
+
+    private HttpResponse getNote(int id) {
+        return doGet("http://127.0.0.1:8080/notes/get?id=" + id);
+    }
+
+    private HttpResponse createNote(Map<String, String> parameters) {
+        return doPost("http://127.0.0.1:8080/notes/new", parameters);
+    }
+
+    private HttpResponse updateNote(Map<String, String> parameters) {
+        return doPost("http://127.0.0.1:8080/notes/update", parameters);
+    }
+
+    private Map<String, String> buildTestNote(final boolean id,
+            final boolean title, final boolean note, final boolean tags) {
+        return new HashMap<String, String>(4) {
+            private static final long serialVersionUID = 216769214743685102L;
+
+            {
+                if (id)    put("_id", rand.nextInt(1000)+"");
+                if (title) put("title", "TestTitle_"+rand.nextInt(1000));
+                if (note)  put("note", "TestNote_"+rand.nextInt(1000));
+                if (tags)  put("tags", "TestTag_"+rand.nextInt(1000)+", TestTag_"+rand.nextInt(1000));
+            }
+        };
+    }
+
     /**
+     * <pre>
      * Test case:
-     *  user deletes all notes
+     *  all notes will be deleted
      *  
      * Result:
      *  status code = 200
      *  content is empty
+     * </pre>
      */
     public void testDeleteNote() {
-        HttpResponse response = doGet("http://127.0.0.1:8080/notes/delete");
-        
+        HttpResponse response = deleteAllNotes();
+
         assertEquals(200, response.getStatusLine().getStatusCode());
         assertEquals(0, response.getEntity().getContentLength());
     }
-    
+
     /**
+     * <pre>
      * Test case:
-     *  user deletes all notes and then requests a list of all notes
+     *  Get a list of all notes. 
+     *  There are no notes in database.
      *  
      * Result:
      *  status code = 200
      *  content = "[]"
+     * </pre>
+     * 
+     * @throws IOException
+     * @throws IllegalStateException
      */
-    public void testDeleteAndGetNote() {
-        doGet("http://127.0.0.1:8080/notes/delete");
-        
-        HttpResponse response = doGet("http://127.0.0.1:8080/notes/get");
-        
+    public void testGetAllNotes_empty() throws IllegalStateException,
+            IOException {
+        HttpResponse response = getAllNotes();
+
         assertEquals(200, response.getStatusLine().getStatusCode());
         assertEquals(2, response.getEntity().getContentLength());
-        try {
-            assertEquals("[]", StringUtil.fromInputStream(response.getEntity().getContent()));
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        assertEquals("[]",
+                StringUtil.fromInputStream(response.getEntity().getContent()));
     }
     
     /**
+     * <pre>
      * Test case:
-     *  user creates note
+     *  Get a list of all notes.
+     *  There are two notes in database.
      *  
      * Result:
      *  status code = 200
-     *  content is empty
+     *  content = "[{&lt;note_1&gt;}, {&lt;note_2&gt;}]"
+     * </pre>
      */
-    public void testCreateNote() {
-        doGet("http://127.0.0.1:8080/notes/delete");
-        
-        String title = "TestTitle_"+rand.nextInt(1000);
-        String note = "TestNote_"+rand.nextInt(1000);
-        
-        HttpResponse response = doPost("http://127.0.0.1:8080/notes/new", new NameValuePair[] {
-           new BasicNameValuePair("title", title),
-           new BasicNameValuePair("note", note)
-        });
-        
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        assertEquals(0, response.getEntity().getContentLength());
-    }
-    
-    /**
-     * Test case:
-     *  user creates note and requests a list of notes, which should contain the previously created note
-     *  
-     * Result:
-     *  status code = 200
-     *  content is JSON array of JSON objects which contains the new note
-     */
-    public void testCreateAndGetNote() {
-        String title = "TestTitle_"+rand.nextInt(1000);
-        String note = "TestNote_"+rand.nextInt(1000);
-        
-        doPost("http://127.0.0.1:8080/notes/new", new NameValuePair[] {
-           new BasicNameValuePair("title", title),
-           new BasicNameValuePair("note", note)
-        });
-        
-        HttpResponse response = doGet("http://127.0.0.1:8080/notes/get");
-        
-        boolean foundNote = false;
-        
+    public void testGetAllNotes_notEmpty() {
+        Map<String, String> note1 = buildTestNote(false, true, true, false);
+        Map<String, String> note2 = buildTestNote(false, true, true, false);
+
+        createNote(note1);
+        createNote(note2);
+
+        HttpResponse response = getAllNotes();
+
         try {
-            String stringArray = StringUtil.fromInputStream(response.getEntity().getContent());
+            String stringArray = StringUtil.fromInputStream(response
+                    .getEntity().getContent());
             JSONArray jsonArray = new JSONArray(stringArray);
+
+            assertEquals(2, jsonArray.length());
+
+            JSONObject actualNote1 = jsonArray.getJSONObject(0);
+            JSONObject actualNote2 = jsonArray.getJSONObject(1);
             
-            for (int i = 0; i<jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                
-                if (jsonObject.getString("title").equals(title) && jsonObject.getString("note").equals(note)) {
-                    foundNote = true;
-                }
-            }
-            
+            assertTrue(
+                (
+                    actualNote1.getString("title").equals(note1.get("title"))
+                    &&
+                    actualNote1.getString("note").equals(note1.get("note"))
+                    &&
+                    actualNote2.getString("title").equals(note2.get("title"))
+                    &&
+                    actualNote2.getString("note").equals(note2.get("note"))
+                )
+                ||
+                (
+                    actualNote1.getString("title").equals(note2.get("title"))
+                    &&
+                    actualNote1.getString("note").equals(note2.get("note"))
+                    &&
+                    actualNote2.getString("title").equals(note1.get("title"))
+                    &&
+                    actualNote2.getString("note").equals(note1.get("note"))
+                )
+            );
+
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -213,61 +270,95 @@ public class TestNotesInterface extends InstrumentationTestCase {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        
-        assertTrue("New note has not been returned by get request", foundNote);
+
+        assertEquals(200, response.getStatusLine().getStatusCode());
+
     }
-    
+
     /**
+     * <pre>
      * Test case:
-     *  user deletes all notes and requests a particular note by id
+     *  create note
+     *  
+     * Result:
+     *  status code = 200
+     *  content is empty
+     * </pre>
+     */
+    public void testCreateNote() {
+        HttpResponse response = createNote(buildTestNote(false, true, true,
+                false));
+
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        assertEquals(0, response.getEntity().getContentLength());
+    }
+
+    /**
+     * <pre>
+     * Test case:
+     *  request a particular note by id
+     *  There are no notes.
      *  
      * Result:
      *  status code = 404
      *  content is empty
+     * </pre>
      */
     public void testDeleteAndGetParticularNote() {
-        doGet("http://127.0.0.1:8080/notes/delete");
-
-        HttpResponse response = doGet("http://127.0.0.1:8080/notes/get?id="+rand.nextInt(1000));
+        HttpResponse response = getNote(rand.nextInt(1000));
 
         assertEquals(404, response.getStatusLine().getStatusCode());
         assertEquals(0, response.getEntity().getContentLength());
     }
-    
+
     /**
+     * <pre>
      * Test case:
-     *  new note should be created with note parameter missing
+     *  create new note without "note"-parameter 
      *  
      * Result:
      *  status code = 400
      *  content is empty
+     * </pre>
      */
     public void testCreateMissingNoteParam() {
-        String title = "TestTitle_"+rand.nextInt(1000);
-        
-        HttpResponse response = doPost("http://127.0.0.1:8080/notes/new", new NameValuePair[] {
-           new BasicNameValuePair("title", title),
-        });
-        
+        HttpResponse response = createNote(buildTestNote(false, true, false,
+                false));
+
         assertEquals(400, response.getStatusLine().getStatusCode());
         assertEquals(0, response.getEntity().getContentLength());
     }
-    
+
     /**
+     * <pre>
      * Test case:
-     *  new note should be created with title parameter missing
+     *  create new note without "title"-parameter
      *  
      * Result:
      *  status code = 400
      *  content is empty
+     * </pre>
      */
     public void testCreateMissingTitleParam() {
-        String note = "TestNote_"+rand.nextInt(1000);
-        
-        HttpResponse response = doPost("http://127.0.0.1:8080/notes/new", new NameValuePair[] {
-           new BasicNameValuePair("note", note),
-        });
-        
+        HttpResponse response = createNote(buildTestNote(false, false, true,
+                false));
+
+        assertEquals(400, response.getStatusLine().getStatusCode());
+        assertEquals(0, response.getEntity().getContentLength());
+    }
+
+    /**
+     * <pre>
+     * Test case:
+     *  update non existent note
+     *  
+     * Result:
+     * </pre>
+     */
+    public void testUpdateNote_nonExistend() {
+        HttpResponse response = updateNote(buildTestNote(true, true, true,
+                false));
+
         assertEquals(400, response.getStatusLine().getStatusCode());
         assertEquals(0, response.getEntity().getContentLength());
     }
