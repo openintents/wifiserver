@@ -72,8 +72,9 @@ public class UpdateNote extends NotesHandler {
             values.put("selection_start", new Long(0));
             values.put("selection_end", new Long(0));
 
-            mContext.getContentResolver().update(mNotesURI, values, "_id = ?", new String[] { id });
+            if (0 == mContext.getContentResolver().update(mNotesURI, values, "_id = ?", new String[] { id })) {
+                response.setStatusCode(400);
+            }
         }
     }
-
 }
