@@ -12,13 +12,20 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
+import org.openintents.wifiserver.preference.OiWiFiPreferences_;
 import org.openintents.wifiserver.util.URLEncodedUtils;
 
 import android.util.Log;
 
+import com.googlecode.androidannotations.annotations.EBean;
+import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
+
+@EBean
 public class LoginHandler implements HttpRequestHandler {
 
     private final static String TAG = LoginHandler.class.getSimpleName();
+
+    @Pref protected OiWiFiPreferences_ prefs;
 
     @Override
     public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
@@ -42,7 +49,15 @@ public class LoginHandler implements HttpRequestHandler {
                     password = nvp.getValue();
             }
 
-            if (password != null && "12345".equals(password)) {
+            String expectedPassword = null;
+
+            if (prefs.customPasswordEnable().get()) {
+                expectedPassword = prefs.customPassword().get();
+            } else {
+                expectedPassword = prefs.randomPassword().get();
+            }
+
+            if (password != null && expectedPassword.equals(password)) {
                 response.addHeader("Set-Cookie", URLEncoder.encode("authenticated=true", "UTF-8"));
             }
         }
