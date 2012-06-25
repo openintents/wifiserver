@@ -174,7 +174,7 @@ public class TestNotesInterface extends InstrumentationTestCase {
      * <pre>
      * Test case:
      *  all notes will be deleted
-     *  
+     *
      * Result:
      *  status code = 200
      *  content is empty
@@ -190,14 +190,14 @@ public class TestNotesInterface extends InstrumentationTestCase {
     /**
      * <pre>
      * Test case:
-     *  Get a list of all notes. 
+     *  Get a list of all notes.
      *  There are no notes in database.
-     *  
+     *
      * Result:
      *  status code = 200
      *  content = "[]"
      * </pre>
-     * 
+     *
      * @throws IOException
      * @throws IllegalStateException
      */
@@ -210,13 +210,13 @@ public class TestNotesInterface extends InstrumentationTestCase {
         assertEquals("[]",
                 StringUtil.fromInputStream(response.getEntity().getContent()));
     }
-    
+
     /**
      * <pre>
      * Test case:
      *  Get a list of all notes.
      *  There are two notes in database.
-     *  
+     *
      * Result:
      *  status code = 200
      *  content = "[{&lt;note_1&gt;}, {&lt;note_2&gt;}]"
@@ -240,7 +240,7 @@ public class TestNotesInterface extends InstrumentationTestCase {
 
             JSONObject actualNote1 = jsonArray.getJSONObject(0);
             JSONObject actualNote2 = jsonArray.getJSONObject(1);
-            
+
             assertTrue(
                 (
                     actualNote1.getString("title").equals(note1.get("title"))
@@ -279,7 +279,7 @@ public class TestNotesInterface extends InstrumentationTestCase {
      * <pre>
      * Test case:
      *  create note
-     *  
+     *
      * Result:
      *  status code = 200
      *  content is empty
@@ -298,7 +298,7 @@ public class TestNotesInterface extends InstrumentationTestCase {
      * Test case:
      *  request a particular note by id
      *  There are no notes.
-     *  
+     *
      * Result:
      *  status code = 404
      *  content is empty
@@ -314,8 +314,8 @@ public class TestNotesInterface extends InstrumentationTestCase {
     /**
      * <pre>
      * Test case:
-     *  create new note without "note"-parameter 
-     *  
+     *  create new note without "note"-parameter
+     *
      * Result:
      *  status code = 400
      *  content is empty
@@ -333,7 +333,7 @@ public class TestNotesInterface extends InstrumentationTestCase {
      * <pre>
      * Test case:
      *  create new note without "title"-parameter
-     *  
+     *
      * Result:
      *  status code = 400
      *  content is empty
@@ -350,9 +350,11 @@ public class TestNotesInterface extends InstrumentationTestCase {
     /**
      * <pre>
      * Test case:
-     *  update non existent note
-     *  
+     *  update non existing note
+     *
      * Result:
+     *  status code = 400
+     *  content is empty
      * </pre>
      */
     public void testUpdateNote_nonExistend() {
@@ -360,6 +362,46 @@ public class TestNotesInterface extends InstrumentationTestCase {
                 false));
 
         assertEquals(400, response.getStatusLine().getStatusCode());
+        assertEquals(0, response.getEntity().getContentLength());
+    }
+
+    /**
+     * <pre>
+     * Test case:
+     *  update existing note
+     *
+     * Result:
+     *  status code = 200
+     *  content is empty
+     * </pre>
+     */
+    public void testUpdateNote_Existend() {
+        Map<String, String> note = buildTestNote(false, true, true, false);
+        createNote(note);
+
+        String id=null;
+
+        try {
+            String stringArray = StringUtil.fromInputStream(getAllNotes()
+                    .getEntity().getContent());
+            JSONArray jsonArray = new JSONArray(stringArray);
+            JSONObject actualNote = jsonArray.getJSONObject(0);
+
+            id = actualNote.get("_id").toString();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        note.put("_id", id);
+        note.put("note", "updated test note");
+
+        HttpResponse response = updateNote(note);
+
+        assertEquals(200, response.getStatusLine().getStatusCode());
         assertEquals(0, response.getEntity().getContentLength());
     }
 }
