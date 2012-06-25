@@ -44,7 +44,6 @@ public class LoginHandler implements HttpRequestHandler {
             }
 
             for (NameValuePair nvp : postParams) {
-                Log.d(TAG, "("+nvp.getName()+"|"+nvp.getValue()+")");
                 if ("password".equals(nvp.getName()))
                     password = nvp.getValue();
             }

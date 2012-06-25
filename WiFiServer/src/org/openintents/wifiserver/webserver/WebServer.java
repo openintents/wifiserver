@@ -47,7 +47,7 @@ public class WebServer {
         STOPPED,
         ERROR
     }
-    
+
     private final static String        TAG   = WebServer.class.getSimpleName();
     private int                        mPort = -1;
 
@@ -56,18 +56,18 @@ public class WebServer {
     private HttpRequestHandlerRegistry mHandlerRegistry;
     private BasicHttpProcessor         mHttpProcessor;
     private List<ServerStatusListener> mListeners;
-    
+
     public WebServer(int port, boolean enableSSL, InputStream certFile, char[] password) {
         this.mPort = port;
         this.mListeners = new LinkedList<ServerStatusListener>();
-        
+
         HttpParams httpParams = new BasicHttpParams();
         httpParams.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 30000)
             .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8*1024)
             .setBooleanParameter(CoreConnectionPNames.STALE_CONNECTION_CHECK, false)
             .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true)
             .setParameter(CoreProtocolPNames.ORIGIN_SERVER, "OI Server");
-        
+
         mHttpProcessor = new BasicHttpProcessor();
         mHttpProcessor.addInterceptor(new ResponseDate());
         mHttpProcessor.addInterceptor(new ResponseServer());
@@ -75,39 +75,39 @@ public class WebServer {
         mHttpProcessor.addInterceptor(new ResponseConnControl());
 
         BufferingHttpServiceHandler handler = new BufferingHttpServiceHandler(
-                        mHttpProcessor, 
-                        new DefaultHttpResponseFactory(), 
-                        new DefaultConnectionReuseStrategy(), 
+                        mHttpProcessor,
+                        new DefaultHttpResponseFactory(),
+                        new DefaultConnectionReuseStrategy(),
                         httpParams);
 
         mHandlerRegistry = new HttpRequestHandlerRegistry();
         handler.setHandlerResolver(mHandlerRegistry);
-        
+
         if (enableSSL) {
             mIOEventDispatch = new SSLServerIOEventDispatch(handler, createSSLContext(certFile, password), httpParams);
         } else {
             mIOEventDispatch = new DefaultServerIOEventDispatch(handler, httpParams);
         }
-        
+
         try {
-            mIOReactor = new DefaultListeningIOReactor(2, httpParams);            
+            mIOReactor = new DefaultListeningIOReactor(2, httpParams);
         } catch (IOReactorException e) {
             e.printStackTrace();
         }
     }
-    
+
     public void addRequestInterceptor(HttpRequestInterceptor interceptor) {
         mHttpProcessor.addInterceptor(interceptor);
     }
-    
+
     public void registerRequestHandler(String urlPattern, HttpRequestHandler handler) {
         mHandlerRegistry.register(urlPattern, handler);
     }
-    
+
     public WebServer(int port) {
         this(port, false, null, null);
     }
-    
+
     private SSLContext createSSLContext(InputStream certFile, char[] password) {
         SSLContext sslContext = null;
         try {
@@ -134,15 +134,14 @@ public class WebServer {
         } catch (KeyManagementException e) {
             Log.e(TAG, "Failed to init ssl context!", e);
         }
-        
+
         return sslContext;
     }
-    
+
     public void start() {
         Thread server = new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "Server thread started");
                 try {
                     mIOReactor.listen(new InetSocketAddress(mPort));
                     mIOReactor.execute(mIOEventDispatch);
@@ -150,12 +149,11 @@ public class WebServer {
                     e.printStackTrace();
                     statusUpdate(Status.ERROR, e.toString());
                 }
-                Log.d(TAG, "Server thread stopped");
             }
         });
         server.setDaemon(true);
         server.start();
-        
+
         statusUpdate(Status.STARTED);
     }
 
@@ -165,28 +163,28 @@ public class WebServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         statusUpdate(Status.STOPPED);
     }
 
     public int getPort() {
         return mPort;
     }
-    
+
     public void addListener(ServerStatusListener listener) {
         this.mListeners.add(listener);
     }
-    
+
     public void removeListener(ServerStatusListener listener) {
         this.mListeners.remove(listener);
     }
-    
+
     private void statusUpdate(Status status, String msg) {
         for (ServerStatusListener listener : mListeners) {
             listener.onStatusChanged(status, msg);
         }
     }
-    
+
     private void statusUpdate(Status status) {
         this.statusUpdate(status, null);
     }

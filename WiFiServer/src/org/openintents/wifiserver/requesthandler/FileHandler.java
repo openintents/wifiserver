@@ -64,10 +64,8 @@ public class FileHandler implements HttpRequestHandler {
             entity = new InputStreamEntity(input, -1);
             response.setEntity(entity);
             String ending = path.substring(path.lastIndexOf(".")+1);
-            Log.d(TAG, "Ending of "+path+" is "+ending);
             if (ending != null && !ending.isEmpty()) {
                 String mime = mimeMapping.get(ending);
-                Log.d(TAG, "mime: "+mime);
                 if (mime != null) {
                     entity.setContentType(mime);
                 }
