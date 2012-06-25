@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.openintents.wifiserver.preference.OIWiFiPreferencesActivity_;
 import org.openintents.wifiserver.preference.OiWiFiPreferences_;
 import org.openintents.wifiserver.requesthandler.FileHandler;
+import org.openintents.wifiserver.requesthandler.LoginHandler;
 import org.openintents.wifiserver.requesthandler.notes.DeleteNote;
 import org.openintents.wifiserver.requesthandler.notes.GetNote;
 import org.openintents.wifiserver.requesthandler.notes.NewNote;
@@ -151,6 +152,7 @@ public class OIWiFiServerActivity extends Activity {
             mWebServer.registerRequestHandler("/notes/delete*", new DeleteNote(this));
             mWebServer.registerRequestHandler("/notes/new*",    new NewNote(this));
             mWebServer.registerRequestHandler("/notes/update*", new UpdateNote(this));
+            mWebServer.registerRequestHandler("/login",         new LoginHandler());
 
             mWebServer.addListener(new ServerStatusListener() {
                 @Override
