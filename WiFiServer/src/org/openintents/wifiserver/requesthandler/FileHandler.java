@@ -2,6 +2,8 @@ package org.openintents.wifiserver.requesthandler;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
@@ -20,6 +22,18 @@ public class FileHandler implements HttpRequestHandler {
 
     private final static String TAG = FileHandler.class.getSimpleName();
     private final AssetManager mAssetManager;
+
+    private final static Map<String, String> mimeMapping = new HashMap<String, String>() {
+        private static final long serialVersionUID = -439543272217048417L;
+        {
+            put("js", "text/javascript");
+            put("htm", "text/html");
+            put("html", "text/html");
+            put("png", "image/png");
+            put("css", "text/css");
+            put("gif", "image/gif");
+        }
+    };
 
     public FileHandler(AssetManager assetManager) {
         this.mAssetManager = assetManager;
@@ -49,6 +63,16 @@ public class FileHandler implements HttpRequestHandler {
             InputStream input = mAssetManager.open("WebInterface"+path);
             entity = new InputStreamEntity(input, -1);
             response.setEntity(entity);
+            String ending = path.substring(path.lastIndexOf(".")+1);
+            Log.d(TAG, "Ending of "+path+" is "+ending);
+            if (ending != null && !ending.isEmpty()) {
+                String mime = mimeMapping.get(ending);
+                Log.d(TAG, "mime: "+mime);
+                if (mime != null) {
+                    entity.setContentType(mime);
+                }
+            }
+
             response.setStatusCode(200);
             return;
         } catch (IOException e) {
