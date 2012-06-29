@@ -62,15 +62,15 @@ public class UpdateNote extends NotesHandler {
             }
 
             ContentValues values = new ContentValues();
-            values.put("modified", new Long(System.currentTimeMillis()));
+            values.put("modified", Long.valueOf(System.currentTimeMillis()));
             values.put("title", title);
             values.put("note", note);
             if (tags != null) {
                 values.put("tags", tags);
             }
             // prevent notepad app from throwing IndexOutOfBoundsException
-            values.put("selection_start", new Long(0));
-            values.put("selection_end", new Long(0));
+            values.put("selection_start", Long.valueOf(0));
+            values.put("selection_end", Long.valueOf(0));
 
             if (0 == mContext.getContentResolver().update(mNotesURI, values, "_id = ?", new String[] { id })) {
                 response.setStatusCode(400);
