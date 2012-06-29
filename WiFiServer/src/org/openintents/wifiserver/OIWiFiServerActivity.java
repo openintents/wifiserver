@@ -1,10 +1,6 @@
 package org.openintents.wifiserver;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
 import java.util.UUID;
 
 import org.openintents.wifiserver.preference.OIWiFiPreferencesActivity_;
@@ -19,6 +15,7 @@ import org.openintents.wifiserver.webserver.ServerStatusListener;
 import org.openintents.wifiserver.webserver.WebServer;
 import org.openintents.wifiserver.webserver.WebServer.Status;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -39,6 +36,7 @@ import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 
+@SuppressLint("Registered")
 @EActivity(R.layout.main)
 @OptionsMenu(R.menu.menu)
 public class OIWiFiServerActivity extends Activity {
@@ -208,13 +206,18 @@ public class OIWiFiServerActivity extends Activity {
     }
 
     private String getDeviceIPAddress() {
-	WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-    	WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-    	int ipAddress = wifiInfo.getIpAddress();
-	return String.format("%d.%d.%d.%d",
-			(ipAddress & 0xff),
-			(ipAddress >> 8 & 0xff),
-			(ipAddress >> 16 & 0xff),
-			(ipAddress >> 24 & 0xff));	
+        WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        int ipAddress = wifiInfo.getIpAddress();
+        return String.format("%d.%d.%d.%d",
+                (ipAddress & 0xff),
+                (ipAddress >> 8 & 0xff),
+                (ipAddress >> 16 & 0xff),
+                (ipAddress >> 24 & 0xff));
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.finish();
     }
 }

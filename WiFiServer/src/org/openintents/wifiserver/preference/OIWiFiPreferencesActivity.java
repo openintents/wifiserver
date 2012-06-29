@@ -17,15 +17,15 @@ import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 
 @EActivity
 public class OIWiFiPreferencesActivity extends PreferenceActivity implements OnPreferenceChangeListener {
-    
+
     @StringRes protected String prefsSSLPortKey;
     @StringRes protected String prefsPortKey;
-    
+
     @StringRes protected String errorPortBoundaries;
     @StringRes protected String errorPortDuplicate;
 
     @Pref protected OiWiFiPreferences_ prefs;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,27 +42,32 @@ public class OIWiFiPreferencesActivity extends PreferenceActivity implements OnP
             showToast(errorPortBoundaries);
             return false;
         }
-        
+
         int otherPort = -1;
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this); 
-                        
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         if (preference.getKey().equals(prefsPortKey)) {
             otherPort = prefs.sslPort().get();
         } else if (preference.getKey().equals(prefsSSLPortKey)) {
             otherPort = prefs.port().get();
         }
-        
+
         if (port == otherPort) {
             showToast(errorPortDuplicate);
             return false;
         }
-        
+
         return true;
     }
-    
+
     private void showToast(String msg) {
         Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
         toast.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.finish();
     }
 }
