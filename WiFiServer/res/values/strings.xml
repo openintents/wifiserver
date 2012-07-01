@@ -6,12 +6,13 @@
     <string name="disconnected">disconnected</string>
     <string name="connected">connected</string>
     <string name="url">URL</string>
-    <string name="password">Password</string>
     <string name="startServer">Start Server</string>
     <string name="stopServer">Stop Server</string>
     <string name="preferences">Preferences</string>
-    <string name="errorPortBoundaries" tools:ignore="UnusedResources">Port must be between 1000 and 65535</string>
-    <string name="errorPortDuplicate" tools:ignore="UnusedResources">Ports for http and https connections must not be the same!</string>
+    <string name="errorPortBoundaries">Port must be between 1000 and 65535</string>
+    <string name="errorPortDuplicate">Ports for http and https connections must not be the same!</string>
+    <string name="errorPasswordNotEmpty">Password must not be empty!</string>
+    <string name="warningSetPassword">Authentication enabled. Do not forget to configure a password!</string>
     
     <string name="prefsCategoryServer">Server</string>
     <string name="prefsSSLEnableTitle">Enable SSL</string>
@@ -23,8 +24,6 @@
     <string name="prefsCategoryPassword">Password protection</string>
     <string name="prefsPasswordEnableTitle">Enable Password</string>
     <string name="prefsPasswordEnableSummary">Asks the user to enter a password when connectiong to the server.</string>
-    <string name="prefsCustomPasswordEnableTitle">Custom password</string>
-    <string name="prefsCustomPasswordEnableSummary">Specify a custom password, otherwise a new one is generated when server starts.</string>
     <string name="prefsCustomPasswordTitle">Password</string>
     <string name="prefsCustomPasswordSummary">Set the custom password</string>
 </resources>

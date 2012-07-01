@@ -2,12 +2,10 @@ package org.openintents.wifiserver.preference;
 
 import org.openintents.wifiserver.R;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -20,9 +18,13 @@ public class OIWiFiPreferencesActivity extends PreferenceActivity implements OnP
 
     @StringRes protected String prefsSSLPortKey;
     @StringRes protected String prefsPortKey;
+    @StringRes protected String prefsCustomPasswordKey;
+    @StringRes protected String prefsPasswordEnableKey;
 
     @StringRes protected String errorPortBoundaries;
     @StringRes protected String errorPortDuplicate;
+    @StringRes protected String errorPasswordNotEmpty;
+    @StringRes protected String warningSetPassword;
 
     @Pref protected OiWiFiPreferences_ prefs;
 
@@ -36,6 +38,31 @@ public class OIWiFiPreferencesActivity extends PreferenceActivity implements OnP
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
+        if (preference.getKey().equals(prefsSSLPortKey) || preference.getKey().equals(prefsPortKey))
+            return validatePorts(preference, newValue);
+
+        if (preference.getKey().equals(prefsCustomPasswordKey)) {
+            if (!validatePassword(preference, newValue))
+                return false;
+        }
+
+        if (preference.getKey().equals(prefsPasswordEnableKey) && Boolean.valueOf(newValue.toString())) {
+            showToast(warningSetPassword);
+        }
+
+        return true;
+    }
+
+    private boolean validatePassword(Preference preference, Object newValue) {
+        if (newValue.toString().equals("")) {
+            showToast(errorPasswordNotEmpty);
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validatePorts(Preference preference, Object newValue) {
         int port = Integer.parseInt(newValue.toString());
 
         if (port < 1000 || port > 65535) {
@@ -44,7 +71,6 @@ public class OIWiFiPreferencesActivity extends PreferenceActivity implements OnP
         }
 
         int otherPort = -1;
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (preference.getKey().equals(prefsPortKey)) {
             otherPort = prefs.sslPort().get();

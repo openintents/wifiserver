@@ -34,19 +34,13 @@
             android:title="@string/prefsPasswordEnableTitle"
             android:summary="@string/prefsPasswordEnableSummary" />
         
-        <CheckBoxPreference 
-            android:defaultValue="@string/prefsCustomPasswordEnableDefault"
-            android:key="@string/prefsCustomPasswordEnableKey"
-            android:title="@string/prefsCustomPasswordEnableTitle"
-            android:summary="@string/prefsCustomPasswordEnableSummary"
-            android:dependency="@string/prefsPasswordEnableKey" />
-        
-        <EditTextPreference 
+        <org.openintents.wifiserver.preference.HashedEditTextPreference 
             android:defaultValue="@string/prefsCustomPasswordDefault"
             android:key="@string/prefsCustomPasswordKey"
             android:title="@string/prefsCustomPasswordTitle"
             android:summary="@string/prefsCustomPasswordSummary"
-            android:dependency="@string/prefsCustomPasswordEnableKey" />
+            android:inputType="textPassword"
+            android:dependency="@string/prefsPasswordEnableKey" />
     </PreferenceCategory>    
 
 </PreferenceScreen>

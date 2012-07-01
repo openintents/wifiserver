@@ -32,8 +32,6 @@ public class LoginHandler implements HttpRequestHandler {
         if (request instanceof BasicHttpEntityEnclosingRequest) {
             HttpEntity postEntity = ((BasicHttpEntityEnclosingRequest)request).getEntity();
 
-            String password = null;
-
             List<NameValuePair> postParams;
             try {
                 postParams = URLEncodedUtils.parse(postEntity);
@@ -44,20 +42,17 @@ public class LoginHandler implements HttpRequestHandler {
             }
 
             for (NameValuePair nvp : postParams) {
-                if ("password".equals(nvp.getName()))
-                    password = nvp.getValue();
-            }
+                if ("password".equals(nvp.getName())) {
+                    String actualPassword = nvp.getValue();
 
-            String expectedPassword = null;
+                    String expectedPassword = prefs.customPassword().get();
 
-            if (prefs.customPasswordEnable().get()) {
-                expectedPassword = prefs.customPassword().get();
-            } else {
-                expectedPassword = prefs.randomPassword().get();
-            }
+                    if (actualPassword != null && expectedPassword.equals(actualPassword)) {
+                        response.addHeader("Set-Cookie", URLEncoder.encode("authenticated=true", "UTF-8"));
+                    }
 
-            if (password != null && expectedPassword.equals(password)) {
-                response.addHeader("Set-Cookie", URLEncoder.encode("authenticated=true", "UTF-8"));
+                    break;
+                }
             }
         }
 

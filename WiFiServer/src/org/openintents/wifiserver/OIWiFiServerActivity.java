@@ -1,11 +1,10 @@
 package org.openintents.wifiserver;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import org.openintents.wifiserver.preference.OIWiFiPreferencesActivity_;
 import org.openintents.wifiserver.preference.OiWiFiPreferences_;
-import org.openintents.wifiserver.requesthandler.FileHandler;
+import org.openintents.wifiserver.requesthandler.FileHandler_;
 import org.openintents.wifiserver.requesthandler.LoginHandler_;
 import org.openintents.wifiserver.requesthandler.notes.DeleteNote;
 import org.openintents.wifiserver.requesthandler.notes.GetNote;
@@ -23,7 +22,6 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -45,8 +43,6 @@ public class OIWiFiServerActivity extends Activity {
 
     @ViewById protected TextView     textWifiStatus;
     @ViewById protected TextView     textURL;
-    @ViewById protected TextView     textPasswordShown;
-    @ViewById protected TextSwitcher textSwitcherPassword;
     @ViewById protected ToggleButton toggleStartStopServer;
 
     @Pref protected OiWiFiPreferences_ prefs;
@@ -105,11 +101,6 @@ public class OIWiFiServerActivity extends Activity {
             stopServer();
     }
 
-    @Click
-    protected void textSwitcherPassword() {
-        textSwitcherPassword.showNext();
-    }
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////   MENU   //////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -124,10 +115,6 @@ public class OIWiFiServerActivity extends Activity {
 ////////////////////////////////////////////////////////////////////////////////
 
     private void startServer() {
-        if (prefs.passwordEnable().get() && !prefs.customPasswordEnable().get()) {
-            prefs.edit().randomPassword().put(UUID.randomUUID().toString().substring(0, 8)).apply();
-        }
-
         if (mWebServer == null) {
             if (prefs.sslEnable().get())
                 try {
@@ -139,15 +126,10 @@ public class OIWiFiServerActivity extends Activity {
                 mWebServer = new WebServer(prefs.port().get());
 
             if (prefs.passwordEnable().get()) {
-                if (prefs.customPasswordEnable().get())
                     mWebServer.addRequestInterceptor(new AuthenticationInterceptor(prefs.customPassword().get()));
-                else {
-                    prefs.edit().randomPassword().put(UUID.randomUUID().toString().substring(0, 8));
-                    mWebServer.addRequestInterceptor(new AuthenticationInterceptor(prefs.randomPassword().get()));
-                }
             }
 
-            mWebServer.registerRequestHandler("*",              new FileHandler(this.getAssets()));
+            mWebServer.registerRequestHandler("*",              FileHandler_.getInstance_(this));
             mWebServer.registerRequestHandler("/notes/get*",    new GetNote(this));
             mWebServer.registerRequestHandler("/notes/delete*", new DeleteNote(this));
             mWebServer.registerRequestHandler("/notes/new",     new NewNote(this));
@@ -177,23 +159,11 @@ public class OIWiFiServerActivity extends Activity {
 
     private void serverStopped() {
         toggleStartStopServer.setChecked(false);
-        textSwitcherPassword.setEnabled(false);
         textURL.setText("");
     }
 
     private void serverStarted() {
-
         textURL.setText(buildURLString());
-
-        if (prefs.passwordEnable().get()) {
-            textSwitcherPassword.setEnabled(true);
-
-            if (prefs.customPasswordEnable().get()) {
-                textPasswordShown.setText(prefs.customPassword().get());
-            } else {
-                textPasswordShown.setText(prefs.randomPassword().get());
-            }
-        }
     }
 
 
