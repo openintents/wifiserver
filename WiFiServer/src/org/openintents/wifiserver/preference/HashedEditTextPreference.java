@@ -7,7 +7,6 @@ import org.openintents.wifiserver.util.HashUtil;
 import android.content.Context;
 import android.preference.EditTextPreference;
 import android.util.AttributeSet;
-import android.util.Log;
 
 /**
  * This preference input field hashes its content before persisting it. The text
@@ -48,8 +47,6 @@ public class HashedEditTextPreference extends EditTextPreference {
 
     @Override
     public void setText(String text) {
-        Log.d(TAG, "setText("+text+")");
-
         /*
          * The check is required because Android gets all preferences and writes
          * them back when the preference activity is going to open. This

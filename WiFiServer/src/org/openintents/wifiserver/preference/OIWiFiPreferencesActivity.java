@@ -34,6 +34,8 @@ public class OIWiFiPreferencesActivity extends PreferenceActivity implements OnP
         addPreferencesFromResource(R.xml.preferences);
         getPreferenceScreen().findPreference(prefsSSLPortKey).setOnPreferenceChangeListener(this);
         getPreferenceScreen().findPreference(prefsPortKey).setOnPreferenceChangeListener(this);
+        getPreferenceScreen().findPreference(prefsCustomPasswordKey).setOnPreferenceChangeListener(this);
+        getPreferenceScreen().findPreference(prefsPasswordEnableKey).setOnPreferenceChangeListener(this);
     }
 
     @Override
