@@ -1,7 +1,5 @@
 package org.openintents.wifiserver.preference;
 
-import java.util.UUID;
-
 import org.openintents.wifiserver.util.HashUtil;
 
 import android.content.Context;
@@ -56,7 +54,7 @@ public class HashedEditTextPreference extends EditTextPreference {
         if (text.equals(getPersistedString("")))
             return;
 
-        String salt = UUID.randomUUID().toString(). substring(0, 8);
+        String salt = HashUtil.generateSalt();
         String saltedPW = text.concat(salt);
         super.setText(HashUtil.sha256(saltedPW).concat(salt));
     }

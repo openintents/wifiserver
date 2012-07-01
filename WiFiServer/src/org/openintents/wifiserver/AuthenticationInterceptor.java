@@ -9,19 +9,21 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.protocol.HttpContext;
+import org.openintents.wifiserver.util.HashUtil;
 
 public class AuthenticationInterceptor implements HttpRequestInterceptor {
 
     private String TAG = AuthenticationInterceptor.class.getSimpleName();
 
-    private final static String KEY_AUTHENTICATED = "authenticated";
+    private final static String ATTRIBUTE_AUTHENTICATED = "authenticated";
+    private final static String COOKIE_SESSIONID = "session";
 
     public AuthenticationInterceptor(String password) {
     }
 
     @Override
     public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
-        context.setAttribute("authenticated", Boolean.FALSE);
+        context.setAttribute(ATTRIBUTE_AUTHENTICATED, Boolean.FALSE);
 
         if (request.containsHeader("Cookie")) {
             Header cookieHdr = request.getHeaders("Cookie")[0];
@@ -34,8 +36,13 @@ public class AuthenticationInterceptor implements HttpRequestInterceptor {
                 key = tokens.nextToken();
                 value = tokens.nextToken();
 
-                if (key.equals(KEY_AUTHENTICATED) && value.equals("true")) {
-                    context.setAttribute("authenticated", Boolean.TRUE);
+                if (key.equals(COOKIE_SESSIONID)) {
+                    String sessionID = value.substring(0, value.length() - HashUtil.SALT_LENGTH);
+                    String salt = value.substring(value.length() - HashUtil.SALT_LENGTH);
+                    String hashedSalt = HashUtil.sha256(salt);
+
+                    if (sessionID.equals(hashedSalt))
+                        context.setAttribute("authenticated", Boolean.TRUE);
                     break;
                 }
             }

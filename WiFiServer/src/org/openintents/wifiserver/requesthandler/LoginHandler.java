@@ -13,6 +13,7 @@ import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.openintents.wifiserver.preference.OiWiFiPreferences_;
+import org.openintents.wifiserver.util.HashUtil;
 import org.openintents.wifiserver.util.URLEncodedUtils;
 
 import android.util.Log;
@@ -43,12 +44,16 @@ public class LoginHandler implements HttpRequestHandler {
 
             for (NameValuePair nvp : postParams) {
                 if ("password".equals(nvp.getName())) {
+
                     String actualPassword = nvp.getValue();
 
-                    String expectedPassword = prefs.customPassword().get();
+                    String hashedPassword = prefs.customPassword().get();
+                    String expectedPassword = hashedPassword.substring(0, hashedPassword.length() - HashUtil.SALT_LENGTH);
 
                     if (actualPassword != null && expectedPassword.equals(actualPassword)) {
-                        response.addHeader("Set-Cookie", URLEncoder.encode("authenticated=true", "UTF-8"));
+                        String sessionSalt = HashUtil.generateSalt();
+                        String sessionID = HashUtil.sha256(sessionSalt)+sessionSalt;
+                        response.addHeader("Set-Cookie", URLEncoder.encode("session="+sessionID, "UTF-8"));
                     }
 
                     break;

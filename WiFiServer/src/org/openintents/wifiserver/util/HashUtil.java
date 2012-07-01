@@ -2,8 +2,11 @@ package org.openintents.wifiserver.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 public class HashUtil {
+
+    public final static int SALT_LENGTH = 8;
 
     public HashUtil() {
 
@@ -30,5 +33,9 @@ public class HashUtil {
         }
 
         return null;
+    }
+
+    public static String generateSalt() {
+        return UUID.randomUUID().toString().substring(0, SALT_LENGTH);
     }
 }
