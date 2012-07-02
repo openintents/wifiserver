@@ -9,9 +9,9 @@
     <string name="startServer">Start Server</string>
     <string name="stopServer">Stop Server</string>
     <string name="preferences">Preferences</string>
-    <string name="errorPortBoundaries">Port must be between 1000 and 65535</string>
-    <string name="errorPortDuplicate">Ports for http and https connections must not be the same!</string>
-    <string name="errorPasswordNotEmpty">Password must not be empty!</string>
+    <string name="errorPortBoundaries" tools:ignore="UnusedResources,UnusedResources">Port must be between 1000 and 65535</string>
+    <string name="errorPortDuplicate" tools:ignore="UnusedResources">Ports for http and https connections must not be the same!</string>
+    <string name="errorPasswordNotEmpty" tools:ignore="UnusedResources">Password must not be empty!</string>
     <string name="warningSetPassword">Authentication enabled. Do not forget to configure a password!</string>
     
     <string name="prefsCategoryServer">Server</string>
