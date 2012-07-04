@@ -1,3 +1,4 @@
 bin/
 gen/
 .apt_generated/
+WifiServer/assets/WebInterface
