@@ -36,6 +36,11 @@ public class GetNote extends NotesHandler {
         if (id == null) {
             Cursor notesCursor = mContext.getContentResolver().query(mNotesURI, PROJECTION, null, null, null);
 
+            if (notesCursor == null) {
+                response.setStatusCode(501);
+                return;
+            }
+
             try {
                 AbstractHttpEntity entity = new StringEntity(notesToJSONArray(notesCursor).toString());
                 entity.setContentType("application/json");
@@ -51,6 +56,12 @@ public class GetNote extends NotesHandler {
             notesCursor.close();
         } else {
             Cursor notesCursor = mContext.getContentResolver().query(mNotesURI, PROJECTION, "_id = ?", new String[] { id }, null);
+
+            if (notesCursor == null) {
+                response.setStatusCode(501);
+                return;
+            }
+
             if (!notesCursor.moveToFirst()) {
                 response.setStatusCode(404);
                 notesCursor.close();
