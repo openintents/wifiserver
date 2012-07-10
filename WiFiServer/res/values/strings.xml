@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-
+    <!-- ***************************
+         About information
+         *************************** -->
+    <string name="about_translators">Launchpad Contributions:
+  OpenIntents devs https://launchpad.net/~openintents-devs</string>
+    
+    <!-- Short explanation of the application (max. 80 characters) -->
+    <string name="about_comments">Access your OI apps using a web browser.</string>
+    
+    <!-- ***************************
+         Application strings
+         *************************** -->
     <string name="app_name">OI WiFi Server</string>
     <string name="wifistatus">WiFi Status</string>
     <string name="disconnected">disconnected</string>
@@ -14,6 +25,9 @@
     <string name="errorPasswordNotEmpty" tools:ignore="UnusedResources">Password must not be empty!</string>
     <string name="warningSetPassword">Authentication enabled. Do not forget to configure a password!</string>
     
+    <!-- ***************************
+         Preferences
+         *************************** -->
     <string name="prefsCategoryServer">Server</string>
     <string name="prefsSSLEnableTitle">Enable SSL</string>
     <string name="prefsSSLEnableSummary">Enables SSL to communicate via a secure https connection.</string>

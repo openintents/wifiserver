@@ -2,6 +2,7 @@ package org.openintents.wifiserver;
 
 import java.io.IOException;
 
+import org.openintents.distribution.DistributionLibraryActivity;
 import org.openintents.wifiserver.preference.OIWiFiPreferencesActivity_;
 import org.openintents.wifiserver.preference.OiWiFiPreferences_;
 import org.openintents.wifiserver.requesthandler.FileHandler_;
@@ -15,13 +16,13 @@ import org.openintents.wifiserver.webserver.WebServer;
 import org.openintents.wifiserver.webserver.WebServer.Status;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -37,18 +38,21 @@ import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 @SuppressLint("Registered")
 @EActivity(R.layout.main)
 @OptionsMenu(R.menu.menu)
-public class OIWiFiServerActivity extends Activity {
+public class OIWiFiServerActivity extends DistributionLibraryActivity {
 
-    private final static String  TAG                       = OIWiFiServerActivity.class.getSimpleName();
+    private static final int           MENU_DISTRIBUTION_START   = Menu.FIRST + 100;      // MUST BE LAST
+    private static final int           DIALOG_DISTRIBUTION_START = 100;                   // MUST BE LAST
 
-    @ViewById protected TextView     textWifiStatus;
-    @ViewById protected TextView     textURL;
-    @ViewById protected ToggleButton toggleStartStopServer;
+    private final static String        TAG                       = OIWiFiServerActivity.class.getSimpleName();
+
+    @ViewById protected TextView       textWifiStatus;
+    @ViewById protected TextView       textURL;
+    @ViewById protected ToggleButton   toggleStartStopServer;
 
     @Pref protected OiWiFiPreferences_ prefs;
 
-    private ConnectivityReceiver mConnectivityReceiver     = null;
-    private WebServer mWebServer = null;
+    private ConnectivityReceiver       mConnectivityReceiver     = null;
+    private WebServer                  mWebServer                = null;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,6 +61,10 @@ public class OIWiFiServerActivity extends Activity {
 
     @AfterViews
     protected void onCreate() {
+        mDistribution.setFirst(MENU_DISTRIBUTION_START, DIALOG_DISTRIBUTION_START);
+        if (mDistribution.showEulaOrNewVersion())
+            return;
+
         mConnectivityReceiver = new ConnectivityReceiver() {
             @Override
             public void onConnectionChanged(ConnectionType type) {

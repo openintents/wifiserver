@@ -1,5 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- ***************************
+         About information
+         *************************** -->
+
+    <!-- Strings for OI About -->
+    <string name="about_copyright">Copyright © 2008-2012 OpenIntents</string>
+    <string name="about_website_url">http://www.openintents.org</string>
+    <string name="about_email">support@openintents.org</string>
+    
+    <string-array name="about_authors"><!-- Add your name here if you helped out -->
+        <item>Stanley Foerster</item><!--  GSOC 2012 student -->
+        
+        <!-- The following item should always stay at the end -->
+        <item>The Android Open Source Project</item>
+    </string-array>
+    
+    <string-array name="about_documenters"><!-- Add your name here if you helped out -->
+        <!-- <item></item> -->
+    </string-array>
+    
+    <string-array name="about_artists"><!-- Add your name here if you helped out -->
+        <item>Bhaskar Kandiyal</item>
+    </string-array>
+    
+    <!-- ***************************
+         Preferences
+         *************************** -->
     <string name="prefsSSLEnableKey">sslEnable</string>
     <string name="prefsSSLEnableDefault">false</string>
     <string name="prefsSSLPortKey">sslPort</string>
