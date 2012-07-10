@@ -1,0 +1,3 @@
+[submodule "WiFiServer/assets/webinterface"]
+	path = WiFiServer/assets/webinterface
+	url = git@github.com:openintents/webinterface.git
