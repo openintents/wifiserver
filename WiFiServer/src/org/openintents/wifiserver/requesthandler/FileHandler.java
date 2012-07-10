@@ -66,7 +66,7 @@ public class FileHandler implements HttpRequestHandler {
         }
 
         if ("/login.html".equals(path)){
-            final InputStream input = mContext.getAssets().open("WebInterface"+path);
+            final InputStream input = mContext.getAssets().open("webinterface"+path);
 
             String password = prefs.customPassword().get();
             String salt = password.substring(password.length()-8);
@@ -87,7 +87,7 @@ public class FileHandler implements HttpRequestHandler {
         }
 
         try {
-            InputStream input = mContext.getAssets().open("WebInterface"+path);
+            InputStream input = mContext.getAssets().open("webinterface"+path);
             entity = new InputStreamEntity(input, -1);
             response.setEntity(entity);
             String ending = path.substring(path.lastIndexOf(".")+1);
