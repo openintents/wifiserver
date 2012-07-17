@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.test.InstrumentationTestCase;
+import android.test.suitebuilder.annotation.Smoke;
 
 import com.jayway.android.robotium.solo.Solo;
 
@@ -83,6 +84,32 @@ public class TestPreferencesActivity extends InstrumentationTestCase {
             solo.clickOnButton(getString(android.R.string.ok));
         }
     }
+    
+    @Smoke
+    public void test000Eula() {
+        String accept = getString(org.openintents.distribution.R.string.oi_distribution_eula_accept);
+        String cancel = getString(org.openintents.distribution.R.string.oi_distribution_eula_refuse);
+        boolean existsAccept = solo.searchButton(accept);
+        boolean existsCancel = solo.searchButton(cancel);
+
+        if (existsAccept && existsCancel) {
+            solo.clickOnButton(accept);
+        }
+    }
+
+    @Smoke
+    public void test001RecentChanges() {
+        String recentChanges = getString(org.openintents.distribution.R.string.oi_distribution_newversion_recent_changes);
+        String cont = getString(org.openintents.distribution.R.string.oi_distribution_newversion_continue);
+        while (solo.scrollUp())
+            ;
+        boolean existsRecentChanges = solo.searchText(recentChanges);
+        boolean existsCont = solo.searchButton(cont);
+
+        if (existsRecentChanges && existsCont) {
+            solo.clickOnButton(cont);
+        }
+    }    
     
     /**
      * This test activates ssl and sets the standard port to the same value as
