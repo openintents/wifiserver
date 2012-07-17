@@ -69,22 +69,6 @@ public class TestPreferencesActivity extends InstrumentationTestCase {
         solo.assertCurrentActivity("Expected "+OIWiFiPreferencesActivity_.class.getSimpleName()+" activity!", OIWiFiPreferencesActivity_.class);
     }
     
-    /**
-     * This method provides a workaround to avoid test failure if the software
-     * keyboard is shown. In this case the <code>clickOnButton()</code> method
-     * would throw an {@link AssertionFailedError} for unknown reasons. It
-     * should be used if there appears a dialog with input field when a
-     * preference is changed.
-     */
-    private void clickPreferenceDialogOKButton() {
-        try {
-            solo.clickOnButton(getString(android.R.string.ok));
-        } catch (AssertionFailedError e) {
-            solo.goBack();
-            solo.clickOnButton(getString(android.R.string.ok));
-        }
-    }
-    
     @Smoke
     public void test000Eula() {
         String accept = getString(org.openintents.distribution.R.string.oi_distribution_eula_accept);
@@ -122,9 +106,10 @@ public class TestPreferencesActivity extends InstrumentationTestCase {
         
         solo.clickOnText(getString(R.string.prefsPortTitle));
         solo.clearEditText(0);
+        solo.waitForText("");
         solo.typeText(0, String.valueOf(sslPort));
         
-        clickPreferenceDialogOKButton();
+        solo.clickOnButton(getString(android.R.string.ok));
         
         assertTrue(solo.waitForText(getString(R.string.errorPortDuplicate)));
         
@@ -142,9 +127,10 @@ public class TestPreferencesActivity extends InstrumentationTestCase {
         
         solo.clickOnText(getString(R.string.prefsSSLPortTitle));
         solo.clearEditText(0);
+        solo.waitForText("");
         solo.typeText(0, String.valueOf(stdPort));
         
-        clickPreferenceDialogOKButton();
+        solo.clickOnButton(getString(android.R.string.ok));
         
         assertTrue(solo.waitForText(getString(R.string.errorPortDuplicate)));
 
@@ -162,9 +148,10 @@ public class TestPreferencesActivity extends InstrumentationTestCase {
         
         solo.clickOnText(getString(R.string.prefsPortTitle));
         solo.clearEditText(0);
+        solo.waitForText("");
         solo.typeText(0, String.valueOf(sslPort));
         
-        clickPreferenceDialogOKButton();
+        solo.clickOnButton(getString(android.R.string.ok));
         
         assertTrue(solo.waitForText(getString(R.string.errorPortDuplicate)));
 
