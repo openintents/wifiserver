@@ -11,6 +11,11 @@ import org.openintents.wifiserver.requesthandler.notes.DeleteNote;
 import org.openintents.wifiserver.requesthandler.notes.GetNote;
 import org.openintents.wifiserver.requesthandler.notes.NewNote;
 import org.openintents.wifiserver.requesthandler.notes.UpdateNote;
+import org.openintents.wifiserver.requesthandler.shoppinglist.DeleteShoppinglist;
+import org.openintents.wifiserver.requesthandler.shoppinglist.GetItem;
+import org.openintents.wifiserver.requesthandler.shoppinglist.GetShoppinglist;
+import org.openintents.wifiserver.requesthandler.shoppinglist.NewShoppinglist;
+import org.openintents.wifiserver.requesthandler.shoppinglist.RenameShoppinglist;
 import org.openintents.wifiserver.webserver.ServerStatusListener;
 import org.openintents.wifiserver.webserver.WebServer;
 import org.openintents.wifiserver.webserver.WebServer.Status;
@@ -184,6 +189,11 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
             mWebServer.registerRequestHandler("/notes/new",     new NewNote(this));
             mWebServer.registerRequestHandler("/notes/update",  new UpdateNote(this));
             mWebServer.registerRequestHandler("/login",         LoginHandler_.getInstance_(this));
+            mWebServer.registerRequestHandler("/shoppinglist/list/get*",    new GetShoppinglist(this));
+            mWebServer.registerRequestHandler("/shoppinglist/list/delete*", new DeleteShoppinglist(this));
+            mWebServer.registerRequestHandler("/shoppinglist/list/new*",    new NewShoppinglist(this));
+            mWebServer.registerRequestHandler("/shoppinglist/list/rename*", new RenameShoppinglist(this));
+            mWebServer.registerRequestHandler("/shoppinglist/item/get*", new GetItem(this));
 
             mWebServer.addListener(new ServerStatusListener() {
                 @Override

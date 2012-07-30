@@ -18,7 +18,7 @@ import android.util.Log;
 
 public class GetNote extends NotesHandler {
 
-    private static final String[] PROJECTION = new String[] {"_id", "title", "note", "tags", "created", "modified"};
+    private static final String[] PROJECTION = new String[] {"_id", "name", "created", "modified", "accessed" };
 
     public GetNote(Context context) {
         super(context);
