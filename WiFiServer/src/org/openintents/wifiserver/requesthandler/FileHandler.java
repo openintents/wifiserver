@@ -25,14 +25,27 @@ import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.RootContext;
 import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 
+/**
+ * The FileHandler interprets the request URL as a path to a file and tries to
+ * return this.
+ *
+ * @author Stanley Förster
+ *
+ */
 @EBean
 public class FileHandler implements HttpRequestHandler {
 
     private final static String TAG = FileHandler.class.getSimpleName();
 
+    /**
+     * Context which is used to access the app's assets.
+     */
     @RootContext protected Context mContext;
     @Pref protected OiWiFiPreferences_ prefs;
 
+    /**
+     * This map is used to map file extensions to mime types.
+     */
     private final static Map<String, String> mimeMapping = new HashMap<String, String>() {
         private static final long serialVersionUID = -439543272217048417L;
         {
@@ -45,6 +58,25 @@ public class FileHandler implements HttpRequestHandler {
         }
     };
 
+    /**
+     * <p>
+     * {@inheritDoc}
+     * </p>
+     * Every URL is interpreted as path to a file. This file is returned with
+     * the appropriate mime type and status code 200.
+     * If a file does not exists the response will be emtpy and status code is
+     * 404.
+     * There are three exception of this:
+     * <ul>
+     * <li>If the URL is just "/", a redirection to index.html is returned
+     * (status code 301)</li>
+     * <li>If "index.html" is requested, the authentication attribute of the
+     * current context is checked. If it is set to true, the requested
+     * index.html file is returned (status code 200), otherwise the response
+     * will be a redirect to login.html (status code 301)
+     * <li>If "login.html" is requested, the appropriate file will be loaded and
+     * a salt will be injected before the page is returned (status code 200).
+     */
     @Override
     public void handle(final HttpRequest request, final HttpResponse response, HttpContext context) throws HttpException, IOException {
         String path = Uri.parse(request.getRequestLine().getUri()).getPath();

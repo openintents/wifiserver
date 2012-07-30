@@ -35,6 +35,13 @@ import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 
+/**
+ * This class represents the main activity. It cannot be used directly by the
+ * manifest file, becuase it is subclassed by AndroidAnnotations. Instead use
+ * OIWifiServerActivity_ when referencing this class.
+ *
+ * @author Stanley Förster
+ */
 @SuppressLint("Registered")
 @EActivity(R.layout.main)
 @OptionsMenu(R.menu.menu)
@@ -49,6 +56,10 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
     @ViewById protected TextView       textURL;
     @ViewById protected ToggleButton   toggleStartStopServer;
 
+    /**
+     * Represents shared preferences of the application. Use this field to
+     * access and modify preferences.
+     */
     @Pref protected OiWiFiPreferences_ prefs;
 
     private ConnectivityReceiver       mConnectivityReceiver     = null;
@@ -59,6 +70,12 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
 //////////////////////////////   LIVECYCLE   ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * This method is called after AndroidAnnotations injected the views in the
+     * {@link #onCreate(android.os.Bundle)} method.<br />
+     * Use this one instead of the original {@link #onCreate(android.os.Bundle)}
+     * method to avoid exceptions because of uninitialized fields.
+     */
     @AfterViews
     protected void onCreate() {
         mDistribution.setFirst(MENU_DISTRIBUTION_START, DIALOG_DISTRIBUTION_START);
@@ -77,6 +94,13 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
         this.registerReceiver(mConnectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
+    /**
+     * <p>
+     * {@inheritDoc}
+     * </p>
+     * If the server is running, it will be stopped and the connectivity
+     * receiver will be unregistered.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -85,6 +109,11 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
             this.unregisterReceiver(mConnectivityReceiver);
     }
 
+    /**
+     * After the connectivity receiver received a connection changed event which
+     * indicated that the WiFi connection is lost, this method is called, which
+     * stops the server and disables the start server button.
+     */
     private void wifiDisconnected() {
         textWifiStatus.setText(R.string.disconnected);
         if (toggleStartStopServer.isChecked())
@@ -93,6 +122,10 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
         stopServer();
     }
 
+    /**
+     * After a connection event which indicates that a WiFi connection has been
+     * established, this method is called and updates the GUI.
+     */
     private void wifiConnected() {
         textWifiStatus.setText(R.string.connected);
         toggleStartStopServer.setEnabled(true);
@@ -101,6 +134,10 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
 /////////////////////////////   INTERACTION   //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * This methods represents an onClickListener of the start/stop server
+     * toggle button.
+     */
     @Click
     protected void toggleStartStopServer() {
         if (toggleStartStopServer.isChecked())
@@ -113,6 +150,10 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
 ////////////////////////////////   MENU   //////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * This is a representation of an onClickListener of the preferences menu
+     * button, which starts the preferences activity.
+     */
     @OptionsItem
     protected void menuPreferences() {
         startActivity(new Intent(this, OIWiFiPreferencesActivity_.class));
@@ -134,7 +175,7 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
                 mWebServer = new WebServer(prefs.port().get());
 
             if (prefs.passwordEnable().get()) {
-                    mWebServer.addRequestInterceptor(new AuthenticationInterceptor(prefs.customPassword().get()));
+                    mWebServer.addRequestInterceptor(new AuthenticationInterceptor());
             }
 
             mWebServer.registerRequestHandler("*",              FileHandler_.getInstance_(this));
@@ -159,12 +200,20 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
         mWebServer.start();
     }
 
+    /**
+     * Stops the server if it is running.
+     */
     private void stopServer() {
         if (mWebServer != null)
             mWebServer.stop();
         mWebServer = null;
     }
 
+    /**
+     * After the server has been stopped, this methid is called and updates the
+     * GUI. The server URL is removed and the start/stop toggle button is
+     * "un-toggled".
+     */
     private void serverStopped() {
         toggleStartStopServer.setChecked(false);
         textURL.setText("");
@@ -179,10 +228,23 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
 ////////////////////////////////   UTIL   //////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Builds an string which represents the address that can be used with a web
+     * browser to access the web server.
+     * The URL has the format <code>http[s]://<i>ip</i>:<i>port</i></code>.
+     *
+     * @return The URL which can be used to access the web server.
+     */
     private String buildURLString() {
         return (prefs.sslEnable().get() ? "https" : "http") + "://" + getDeviceIPAddress()+":"+mWebServer.getPort();
     }
 
+    /**
+     * Returns the IPv4 address of the device, which will only work when it is
+     * connected via WiFi. Otherwise "0.0.0.0" will be returned.
+     *
+     * @return A string representation of the device's IPv4 address.
+     */
     private String getDeviceIPAddress() {
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
@@ -194,6 +256,13 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
                 (ipAddress >> 24 & 0xff));
     }
 
+    /**
+     * <p>
+     * {@inheritDoc}
+     * </p>
+     * This method must be overridden to avoid compatibility issues with older
+     * Android versions.
+     */
     @Override
     public void onBackPressed() {
         this.finish();

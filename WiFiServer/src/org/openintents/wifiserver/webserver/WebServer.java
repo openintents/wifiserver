@@ -40,8 +40,20 @@ import org.apache.http.protocol.ResponseServer;
 
 import android.util.Log;
 
+/**
+ * The WebServer is the core of the server application. It handles the
+ * initialization and is used to start and stop the actual server component.
+ *
+ * @author Stanley Förster
+ *
+ */
 public class WebServer {
 
+    /**
+     * This enum includes all states, the server can have.
+     *
+     * @author Stanley Förster
+     */
     public enum Status {
         STARTED,
         STOPPED,
@@ -57,6 +69,22 @@ public class WebServer {
     private BasicHttpProcessor         mHttpProcessor;
     private List<ServerStatusListener> mListeners;
 
+    /**
+     * Creates a new {@link WebServer} with SSL support.<br />
+     * When using this constructor the web server is initialized with SSL
+     * support using the given certificate. To load the key store a password is
+     * required. Also only BKS key stores are supported.<br />
+     * The server will listen for incoming requests only on the specified port.
+     *
+     * @param port
+     *            Port on which the server will listen for incoming requests.
+     * @param enableSSL
+     *            Indicates if communication should be SSL encrypted.
+     * @param certFile
+     *            The certificate which is used to establish a SSL connection.
+     * @param password
+     *            Password which is required to load the key store.
+     */
     public WebServer(int port, boolean enableSSL, InputStream certFile, char[] password) {
         this.mPort = port;
         this.mListeners = new LinkedList<ServerStatusListener>();
@@ -96,18 +124,57 @@ public class WebServer {
         }
     }
 
-    public void addRequestInterceptor(HttpRequestInterceptor interceptor) {
-        mHttpProcessor.addInterceptor(interceptor);
-    }
-
-    public void registerRequestHandler(String urlPattern, HttpRequestHandler handler) {
-        mHandlerRegistry.register(urlPattern, handler);
-    }
-
+    /**
+     * Creates a web server without SSL support, which will listen on the
+     * specified port.
+     *
+     * @param port
+     *            The port on which the server should listen for incoming
+     *            requests.
+     */
     public WebServer(int port) {
         this(port, false, null, null);
     }
 
+    /**
+     * Adds a new request interceptor, which will be called before the request
+     * is handled by a specific {@link HttpRequestHandler}.
+     *
+     * @param interceptor
+     *            The interceptor which should be added to the list of
+     *            interceptors.
+     */
+    public void addRequestInterceptor(HttpRequestInterceptor interceptor) {
+        mHttpProcessor.addInterceptor(interceptor);
+    }
+
+    /**
+     * Registers a new request handler which will be invoked when a request's
+     * URL matches the given URL pattern.
+     * If there are more than one matching pattern, the most specific one will
+     * be used.
+     *
+     * @param urlPattern
+     *            The pattern that indicates which requests should be handled by
+     *            the request handler.
+     * @param handler
+     *            The handler which will be invoked if a request's URL matches
+     *            the corresponding pattern.
+     */
+    public void registerRequestHandler(String urlPattern, HttpRequestHandler handler) {
+        mHandlerRegistry.register(urlPattern, handler);
+    }
+
+    /**
+     * Creates a new SSL context by loading the given certificate from a key
+     * store. The only supported format is "BKS".
+     *
+     * @param certFile
+     *            Certificate file which is required to create a SSL context.
+     * @param password
+     *            The password is required to load the key store.
+     * @return A initializes SSL context using the given certificate.
+     */
     private SSLContext createSSLContext(InputStream certFile, char[] password) {
         SSLContext sslContext = null;
         try {
@@ -138,6 +205,11 @@ public class WebServer {
         return sslContext;
     }
 
+    /**
+     * Starts the server which will then listen for incoming requests. This will
+     * run in a new thread. After the server started successfully the state will
+     * be changed to "STARTED".
+     */
     public void start() {
         Thread server = new Thread(new Runnable() {
             @Override
@@ -157,6 +229,9 @@ public class WebServer {
         statusUpdate(Status.STARTED);
     }
 
+    /**
+     * Stops the server and sets its state to "STOPPED".
+     */
     public void stop() {
         try {
             mIOReactor.shutdown();
@@ -167,24 +242,59 @@ public class WebServer {
         statusUpdate(Status.STOPPED);
     }
 
+    /**
+     * Returns the port which was specified in the constructor.
+     *
+     * @return The port, the server listens on.
+     */
     public int getPort() {
         return mPort;
     }
 
+    /**
+     * Adds a new listener which will be notified if the server changes its
+     * state.
+     *
+     * @param listener
+     *            A new listener.
+     */
     public void addListener(ServerStatusListener listener) {
         this.mListeners.add(listener);
     }
 
+    /**
+     * Removes the specified listener, so it will be no longer invoked after the
+     * server changed its state.
+     *
+     * @param listener
+     *            The listener which should be removed.
+     */
     public void removeListener(ServerStatusListener listener) {
         this.mListeners.remove(listener);
     }
 
+    /**
+     * Notifies all registered listeners if the server's state changed.
+     * An optional message can be given which includes additional information
+     * about the state change, like an error message.
+     *
+     * @param status
+     *            The server's new state.
+     * @param msg
+     *            An optional message.
+     */
     private void statusUpdate(Status status, String msg) {
         for (ServerStatusListener listener : mListeners) {
             listener.onStatusChanged(status, msg);
         }
     }
 
+    /**
+     * Notifies all registered listeners if the server's state changed.
+     *
+     * @param status
+     *            The server's new state.
+     */
     private void statusUpdate(Status status) {
         this.statusUpdate(status, null);
     }

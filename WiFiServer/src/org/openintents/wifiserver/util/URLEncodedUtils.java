@@ -28,7 +28,7 @@ public class URLEncodedUtils {
      * Content-Encoding header.
      * <p>
      * This is typically used while parsing an HTTP POST.
-     *
+     *</p>
      * @param entity
      *            The entity to parse
      * @throws IOException

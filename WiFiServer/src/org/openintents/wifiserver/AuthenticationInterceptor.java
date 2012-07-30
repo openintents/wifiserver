@@ -9,8 +9,18 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpRequestHandler;
 import org.openintents.wifiserver.util.HashUtil;
 
+/**
+ * The authentication interceptor is called before a request is processed by a
+ * {@link HttpRequestHandler}.
+ * It checks whether the user is allowed to execute the request and sets a
+ * context attribute which indicates if the check was successful or not.
+ *
+ * @author Stanley Förster
+ *
+ */
 public class AuthenticationInterceptor implements HttpRequestInterceptor {
 
     private String TAG = AuthenticationInterceptor.class.getSimpleName();
@@ -18,9 +28,17 @@ public class AuthenticationInterceptor implements HttpRequestInterceptor {
     private final static String ATTRIBUTE_AUTHENTICATED = "authenticated";
     private final static String COOKIE_SESSIONID = "session";
 
-    public AuthenticationInterceptor(String password) {
-    }
-
+    /**
+     * <p>
+     * {@inheritDoc}
+     * </p>
+     *
+     * A cookie is required to authenticate the request. The cookie's key is
+     * "session" and its value is a hashed, random number.
+     * If the cookie is correct the context attribute "authenticated" is set to
+     * true. This attribute is used by {@link HttpRequestHandler}s to decide
+     * what to do.
+     */
     @Override
     public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
         context.setAttribute(ATTRIBUTE_AUTHENTICATED, Boolean.FALSE);
@@ -46,7 +64,6 @@ public class AuthenticationInterceptor implements HttpRequestInterceptor {
                     break;
                 }
             }
-
         }
     }
 }

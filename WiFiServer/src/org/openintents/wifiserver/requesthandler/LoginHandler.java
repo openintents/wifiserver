@@ -21,6 +21,12 @@ import android.util.Log;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 
+/**
+ * The LoginHandler handles requests of the form "/login".
+ *
+ * @author Stanley Förster
+ *
+ */
 @EBean
 public class LoginHandler implements HttpRequestHandler {
 
@@ -28,6 +34,16 @@ public class LoginHandler implements HttpRequestHandler {
 
     @Pref protected OiWiFiPreferences_ prefs;
 
+    /**
+     * <p>
+     * {@inheritDoc}
+     * </p>
+     * The request should have POST parameter called "password" which is the
+     * hashed representation of the user's password.
+     * If the password is correct, a cookie will be set which contains a random
+     * hashed number.
+     * The response is a redirection to index.html (status code 301).
+     */
     @Override
     public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
         if (request instanceof BasicHttpEntityEnclosingRequest) {
