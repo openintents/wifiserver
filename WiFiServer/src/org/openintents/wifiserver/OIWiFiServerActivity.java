@@ -193,7 +193,7 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
             mWebServer.registerRequestHandler("/shoppinglist/list/delete*", new DeleteShoppinglist(this));
             mWebServer.registerRequestHandler("/shoppinglist/list/new*",    new NewShoppinglist(this));
             mWebServer.registerRequestHandler("/shoppinglist/list/rename*", new RenameShoppinglist(this));
-            mWebServer.registerRequestHandler("/shoppinglist/item/get*", new GetItem(this));
+            mWebServer.registerRequestHandler("/shoppinglist/item/get*",    new GetItem(this));
 
             mWebServer.addListener(new ServerStatusListener() {
                 @Override
