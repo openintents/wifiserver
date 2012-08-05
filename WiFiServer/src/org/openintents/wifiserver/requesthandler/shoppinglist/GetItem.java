@@ -32,7 +32,6 @@ public class GetItem extends ShoppinglistHandler {
                                                                     Items.TAGS,
                                                                     Items.BARCODE,
                                                                     Items.LOCATION,
-//                                                                  Items.NOTE,
                                                                   };
 
     public GetItem(Context context) {
@@ -58,8 +57,6 @@ public class GetItem extends ShoppinglistHandler {
                                        ContainsFull.ITEM_PRICE,
                                        ContainsFull.ITEM_UNITS,
                                        ContainsFull.ITEM_TAGS,
-//                                       ContainsFull.BARCODE,
-//                                       ContainsFull.LOCATION,
                                        ContainsFull.LIST_ID,
                                        ContainsFull.PRIORITY,
                                        ContainsFull.QUANTITY,
@@ -79,8 +76,6 @@ public class GetItem extends ShoppinglistHandler {
                             object.put(ContainsFull.ITEM_PRICE, itemsListCursor.getInt(   itemsListCursor.getColumnIndex(ContainsFull.ITEM_PRICE)));
                             object.put(ContainsFull.ITEM_UNITS, itemsListCursor.getString(itemsListCursor.getColumnIndex(ContainsFull.ITEM_UNITS)));
                             object.put(ContainsFull.ITEM_TAGS,  itemsListCursor.getString(itemsListCursor.getColumnIndex(ContainsFull.ITEM_TAGS)));
-//                            object.put(ContainsFull.BARCODE,    itemsListCursor.getString(itemsListCursor.getColumnIndex(ContainsFull.BARCODE)));
-//                            object.put(ContainsFull.LOCATION,   itemsListCursor.getString(itemsListCursor.getColumnIndex(ContainsFull.LOCATION)));
                             object.put(ContainsFull.LIST_ID,    itemsListCursor.getLong(  itemsListCursor.getColumnIndex(ContainsFull.LIST_ID)));
                             object.put(ContainsFull.PRIORITY,   itemsListCursor.getLong(  itemsListCursor.getColumnIndex(ContainsFull.PRIORITY)));
                             object.put(ContainsFull.QUANTITY,   itemsListCursor.getString(itemsListCursor.getColumnIndex(ContainsFull.QUANTITY)));
@@ -101,47 +96,6 @@ public class GetItem extends ShoppinglistHandler {
                 }
 
                 itemsListCursor.close();
-
-//                Cursor containsCursor = mContext.getContentResolver().query(Contains.CONTENT_URI, PROJECTION_CONTAINS, Contains.LIST_ID+" = ?", new String[] { list }, Contains.ITEM_ID+" ASC");
-//                Cursor itemsCursor = mContext.getContentResolver().query(Items.CONTENT_URI, PROJECTION_ITEMS, null, null, _ID+" ASC");
-//
-//                CursorJoiner joiner = new CursorJoiner(containsCursor, new String[] { Contains.ITEM_ID }, itemsCursor, new String[] { _ID });
-//
-//                try {
-//                    JSONArray array = new JSONArray();
-//
-//                    for (CursorJoiner.Result joinerResult : joiner) {
-//                        switch (joinerResult) {
-//                            case LEFT:
-//                                // Log.d(Left row: output cursor row());
-//                                break;
-//                            case RIGHT:
-//                                // Log.d(Right row: output cursor row());
-//                                break;
-//                            case BOTH:
-//                                JSONObject json = itemToJSONObject(itemsCursor);
-//                                json.put(Contains.PRIORITY, containsCursor.getInt(containsCursor.getColumnIndex(Contains.PRIORITY)));
-//                                json.put(Contains.QUANTITY, containsCursor.getString(containsCursor.getColumnIndex(Contains.QUANTITY)));
-//                                json.put(Contains.STATUS, containsCursor.getInt(containsCursor.getColumnIndex(Contains.STATUS)));
-//
-//                                array.put(json);
-//                                break;
-//                        }
-//                    }
-//
-//                    AbstractHttpEntity entity = new StringEntity(itemsToJSONArray(itemsCursor).toString());
-//                    entity.setContentType("application/json");
-//                    response.setEntity(entity);
-//                } catch (UnsupportedEncodingException e) {
-//                    Log.e(TAG, "Failed to create entity!", e);
-//                    response.setStatusCode(500);
-//                } catch (JSONException e) {
-//                    Log.e(TAG, "Failed to create JSON Array", e);
-//                    response.setStatusCode(500);
-//                }
-//
-//                itemsCursor.close();
-//                containsCursor.close();
             } else {
                 Cursor notesCursor = mContext.getContentResolver().query(Items.CONTENT_URI, PROJECTION_ITEMS, null, null, null);
 
@@ -192,7 +146,7 @@ public class GetItem extends ShoppinglistHandler {
         }
     }
 
-    protected JSONObject itemToJSONObject(long id, String name, String image, long price, String units, String tags, String barcode, String location/*, String note,*/) throws JSONException {
+    protected JSONObject itemToJSONObject(long id, String name, String image, long price, String units, String tags, String barcode, String location) throws JSONException {
         JSONObject json = new JSONObject();
         json.put(Items._ID, id);
         json.put(Items.NAME, name);
@@ -202,7 +156,6 @@ public class GetItem extends ShoppinglistHandler {
         json.put(Items.TAGS, tags);
         json.put(Items.BARCODE, barcode);
         json.put(Items.LOCATION, location);
-//        json.put(NOTE, note);
         return json;
     }
 
@@ -215,7 +168,6 @@ public class GetItem extends ShoppinglistHandler {
                                 itemCursor.getString(itemCursor.getColumnIndex(Items.TAGS)),
                                 itemCursor.getString(itemCursor.getColumnIndex(Items.BARCODE)),
                                 itemCursor.getString(itemCursor.getColumnIndex(Items.LOCATION))
-//                                itemCursor.getString(itemCursor.getColumnIndex(NOTE)),
                                 );
     }
 
