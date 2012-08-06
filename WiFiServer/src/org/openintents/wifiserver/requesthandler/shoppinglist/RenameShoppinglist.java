@@ -31,7 +31,6 @@ public class RenameShoppinglist extends ShoppinglistHandler {
 
         String oldName = URLUtil.getParameter(request.getRequestLine().getUri(), "oldname");
         String newName = URLUtil.getParameter(request.getRequestLine().getUri(), "newname");
-
         String id = URLUtil.getParameter(request.getRequestLine().getUri(), "id");
 
         if (newName == null || newName.equals("")) {

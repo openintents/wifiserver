@@ -1,9 +1,6 @@
 package org.openintents.wifiserver.requesthandler.shoppinglist;
 
 import static android.provider.BaseColumns._ID;
-import static org.openintents.shopping.library.provider.ShoppingContract.Lists.ACCESSED_DATE;
-import static org.openintents.shopping.library.provider.ShoppingContract.Lists.CREATED_DATE;
-import static org.openintents.shopping.library.provider.ShoppingContract.Lists.MODIFIED_DATE;
 import static org.openintents.shopping.library.provider.ShoppingContract.Lists.NAME;
 
 import java.io.IOException;
@@ -27,7 +24,7 @@ import android.util.Log;
 
 public class GetShoppinglist extends ShoppinglistHandler {
 
-    private static final String[] PROJECTION = new String[] { _ID, NAME, CREATED_DATE, MODIFIED_DATE, ACCESSED_DATE };
+    private static final String[] PROJECTION = new String[] { _ID, NAME };
 
     public GetShoppinglist(Context context) {
         super(context);
@@ -91,23 +88,17 @@ public class GetShoppinglist extends ShoppinglistHandler {
         }
     }
 
-    protected JSONObject listToJSONObject(int id, String name, long createdDate, long modifiedDate, long accessedDate) throws JSONException {
+    protected JSONObject listToJSONObject(int id, String name) throws JSONException {
         JSONObject json = new JSONObject();
         json.put(_ID, id);
         json.put(NAME, name);
-        json.put(CREATED_DATE, createdDate);
-        json.put(MODIFIED_DATE, modifiedDate);
-        json.put(ACCESSED_DATE, accessedDate);
 
         return json;
     }
 
     protected JSONObject listToJSONObject(Cursor listCursor) throws JSONException {
         return listToJSONObject(listCursor.getInt(listCursor.getColumnIndex(_ID)),
-                        listCursor.getString(listCursor.getColumnIndex(NAME)),
-                        listCursor.getLong(listCursor.getColumnIndex(CREATED_DATE)),
-                        listCursor.getLong(listCursor.getColumnIndex(MODIFIED_DATE)),
-                        listCursor.getLong(listCursor.getColumnIndex(ACCESSED_DATE)));
+                        listCursor.getString(listCursor.getColumnIndex(NAME)));
     }
 
     protected JSONArray listsToJSONArray(Cursor listsCursor) throws JSONException {

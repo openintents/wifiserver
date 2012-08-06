@@ -30,11 +30,10 @@ public class UpdateItem extends ShoppinglistHandler {
             return;
         }
 
-        Log.d(TAG, "Update/Creat item");
-
         if (request instanceof BasicHttpEntityEnclosingRequest) {
             HttpEntity postEntity = ((BasicHttpEntityEnclosingRequest)request).getEntity();
 
+            String id = null;
             String name = null;
             String tags = null;
             String price = null;
@@ -49,6 +48,8 @@ public class UpdateItem extends ShoppinglistHandler {
             }
 
             for (NameValuePair nvp : postParams) {
+                if (ShoppingContract.Items._ID.equals(nvp.getName()))
+                    id = nvp.getValue();
                 if (ShoppingContract.Items.NAME.equals(nvp.getName()))
                     name = nvp.getValue();
                 if (ShoppingContract.Items.TAGS.equals(nvp.getName()))
@@ -56,8 +57,6 @@ public class UpdateItem extends ShoppinglistHandler {
                 if (ShoppingContract.Items.PRICE.equals(nvp.getName()))
                     price = nvp.getValue();
             }
-
-            Log.d(TAG, "Item: "+name);
 
             if (name == null || name.equals("")) {
                 response.setStatusCode(400);
