@@ -94,8 +94,8 @@ public class UpdateItem extends ShoppinglistHandler {
                     cv.put(ShoppingContract.Items.TAGS, item_tags);
                 if (item_price != null)
                     cv.put(ShoppingContract.Items.PRICE, Double.valueOf(100*Double.valueOf(item_price)).longValue());
-
-                mContext.getContentResolver().update(ShoppingContract.Items.CONTENT_URI, cv, ShoppingContract.Items._ID + " = ?", new String[] {item_id});
+                if (cv.size() > 0)
+                    mContext.getContentResolver().update(ShoppingContract.Items.CONTENT_URI, cv, ShoppingContract.Items._ID + " = ?", new String[] {item_id});
             }
 
             // if unit is given --> update
