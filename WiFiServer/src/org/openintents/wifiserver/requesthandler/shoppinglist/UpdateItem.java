@@ -11,7 +11,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.protocol.HttpContext;
 import org.openintents.shopping.library.provider.ShoppingContract;
-import org.openintents.shopping.library.provider.ShoppingContract.Status;
 import org.openintents.shopping.library.util.ShoppingUtils;
 import org.openintents.wifiserver.util.URLEncodedUtils;
 
@@ -110,8 +109,8 @@ public class UpdateItem extends ShoppinglistHandler {
                 return;
             }
 
-            if (status == null || status.equals(""))
-                status = "" + Status.WANT_TO_BUY;
+//            if (status == null || status.equals(""))
+//                status = "" + Status.WANT_TO_BUY;
 
             ShoppingUtils.addItemToList(mContext, Long.valueOf(item_id), Long.valueOf(list_id), Long.valueOf(status), priority, quantity, false, false, false);
         }
