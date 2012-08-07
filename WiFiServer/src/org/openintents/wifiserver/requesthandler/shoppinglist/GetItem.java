@@ -4,7 +4,6 @@ import static android.provider.BaseColumns._ID;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.NoSuchElementException;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
@@ -85,11 +84,19 @@ public class GetItem extends ShoppinglistHandler {
 
             if (id != null && list != null) {
                 cursor = query(ContainsFull.CONTENT_URI, PROJECTION_CONTAINS, ContainsFull.LIST_ID + " = ? AND " + ContainsFull.ITEM_ID + " = ?", new String[] { list, id }, null);
+                if (cursor.getCount() == 0) {
+                    response.setStatusCode(404);
+                    return;
+                }
                 jsonResult = containsToJSONObject(cursor);
             }
 
             if (id != null && list == null) {
                 cursor = query(Items.CONTENT_URI, PROJECTION_ITEMS, _ID+" = ?", new String[] { id }, null);
+                if (cursor.getCount() == 0) {
+                    response.setStatusCode(404);
+                    return;
+                }
                 jsonResult = itemToJSONObject(cursor);
             }
 
@@ -105,9 +112,6 @@ public class GetItem extends ShoppinglistHandler {
         } catch (UnsupportedOperationException e) {
             Log.e(TAG, e.getMessage(), e);
             response.setStatusCode(501);
-        } catch (NoSuchElementException e) {
-            Log.e(TAG, e.getMessage(), e);
-            response.setStatusCode(404);
         } finally {
             if (cursor != null)
                 cursor.close();
@@ -127,10 +131,6 @@ public class GetItem extends ShoppinglistHandler {
         Cursor result = mContext.getContentResolver().query(contentUri, projectionItems, selection, selectionArgs, sortOrder);
         if (result == null)
             throw new UnsupportedOperationException("No content provider available for URI "+contentUri.toString());
-
-        if (!result.moveToFirst()) {
-            throw new NoSuchElementException("Cursor is empty!");
-        }
 
         return result;
     }
