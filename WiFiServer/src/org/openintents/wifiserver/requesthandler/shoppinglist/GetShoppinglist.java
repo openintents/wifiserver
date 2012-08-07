@@ -3,10 +3,8 @@ package org.openintents.wifiserver.requesthandler.shoppinglist;
 import static android.provider.BaseColumns._ID;
 import static org.openintents.shopping.library.provider.ShoppingContract.Lists.NAME;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.AbstractHttpEntity;
@@ -31,7 +29,7 @@ public class GetShoppinglist extends ShoppinglistHandler {
     }
 
     @Override
-    public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
+    public void getResponse(HttpRequest request, HttpResponse response, HttpContext context) {
         if (!"GET".equals(request.getRequestLine().getMethod())) {
             response.setStatusCode(405);
             return;

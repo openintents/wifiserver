@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -25,7 +24,7 @@ public class UpdateItem extends ShoppinglistHandler {
     }
 
     @Override
-    public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
+    public void getResponse(HttpRequest request, HttpResponse response, HttpContext context) {
         if (!"POST".equals(request.getRequestLine().getMethod())) {
             response.setStatusCode(405);
             return;

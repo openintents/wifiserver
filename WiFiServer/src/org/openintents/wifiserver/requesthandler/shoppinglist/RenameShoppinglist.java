@@ -5,9 +5,6 @@ import static org.openintents.shopping.library.provider.ShoppingContract.Lists.C
 import static org.openintents.shopping.library.provider.ShoppingContract.Lists.MODIFIED_DATE;
 import static org.openintents.shopping.library.provider.ShoppingContract.Lists.NAME;
 
-import java.io.IOException;
-
-import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HttpContext;
@@ -23,7 +20,7 @@ public class RenameShoppinglist extends ShoppinglistHandler {
     }
 
     @Override
-    public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
+    public void getResponse(HttpRequest request, HttpResponse response, HttpContext context) {
         if (!"GET".equals(request.getRequestLine().getMethod())) {
             response.setStatusCode(405);
             return;
