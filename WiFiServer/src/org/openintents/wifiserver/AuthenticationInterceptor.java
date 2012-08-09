@@ -50,9 +50,10 @@ public class AuthenticationInterceptor implements HttpRequestInterceptor {
             StringTokenizer tokens = new StringTokenizer(cookieStr, "=;");
             String key = null;
             String value = null;
+
             while (tokens.hasMoreTokens()) {
-                key = tokens.nextToken();
-                value = tokens.nextToken();
+                key = tokens.nextToken().trim();
+                value = tokens.nextToken().trim();
 
                 if (key.equals(COOKIE_SESSIONID)) {
                     String sessionID = value.substring(0, value.length() - HashUtil.SALT_LENGTH);
