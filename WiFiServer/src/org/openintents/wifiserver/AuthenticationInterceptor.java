@@ -55,7 +55,7 @@ public class AuthenticationInterceptor implements HttpRequestInterceptor {
                 key = tokens.nextToken().trim();
                 value = tokens.nextToken().trim();
 
-                if (key.equals(COOKIE_SESSIONID)) {
+                if (key.equals(COOKIE_SESSIONID) && value.length() > HashUtil.SALT_LENGTH) {
                     String sessionID = value.substring(0, value.length() - HashUtil.SALT_LENGTH);
                     String salt = value.substring(value.length() - HashUtil.SALT_LENGTH);
                     String hashedSalt = HashUtil.sha256(salt);

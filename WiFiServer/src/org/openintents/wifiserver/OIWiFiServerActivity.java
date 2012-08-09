@@ -7,6 +7,7 @@ import org.openintents.wifiserver.preference.OIWiFiPreferencesActivity_;
 import org.openintents.wifiserver.preference.OiWiFiPreferences_;
 import org.openintents.wifiserver.requesthandler.FileHandler_;
 import org.openintents.wifiserver.requesthandler.LoginHandler_;
+import org.openintents.wifiserver.requesthandler.LogoutHandler;
 import org.openintents.wifiserver.requesthandler.notes.DeleteNote;
 import org.openintents.wifiserver.requesthandler.notes.GetNote;
 import org.openintents.wifiserver.requesthandler.notes.NewNote;
@@ -191,6 +192,7 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
             mWebServer.registerRequestHandler("/notes/new",     new NewNote(this));
             mWebServer.registerRequestHandler("/notes/update",  new UpdateNote(this));
             mWebServer.registerRequestHandler("/login",         LoginHandler_.getInstance_(this));
+            mWebServer.registerRequestHandler("/logout",        new LogoutHandler());
             mWebServer.registerRequestHandler("/shoppinglist/list/get*",    new GetShoppinglist(this));
             mWebServer.registerRequestHandler("/shoppinglist/list/delete*", new DeleteShoppinglist(this));
             mWebServer.registerRequestHandler("/shoppinglist/list/new*",    new NewShoppinglist(this));

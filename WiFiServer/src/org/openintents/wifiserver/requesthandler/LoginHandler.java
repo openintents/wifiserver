@@ -1,7 +1,6 @@
 package org.openintents.wifiserver.requesthandler;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -69,7 +68,7 @@ public class LoginHandler implements HttpRequestHandler {
                     if (actualPassword != null && expectedPassword.equals(actualPassword)) {
                         String sessionSalt = HashUtil.generateSalt();
                         String sessionID = HashUtil.sha256(sessionSalt)+sessionSalt;
-                        response.addHeader("Set-Cookie", URLEncoder.encode("session="+sessionID, "UTF-8"));
+                        response.addHeader("Set-Cookie", "session="+sessionID);
                     }
 
                     break;
