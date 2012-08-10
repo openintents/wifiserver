@@ -10,11 +10,13 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.protocol.HttpContext;
 import org.openintents.shopping.library.provider.ShoppingContract;
+import org.openintents.shopping.library.provider.ShoppingContract.ContainsFull;
 import org.openintents.shopping.library.util.ShoppingUtils;
 import org.openintents.wifiserver.util.URLEncodedUtils;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 
 public class UpdateItem extends ShoppinglistHandler {
@@ -108,8 +110,18 @@ public class UpdateItem extends ShoppinglistHandler {
                 return;
             }
 
-//            if (status == null || status.equals(""))
-//                status = "" + Status.WANT_TO_BUY;
+            if (status == null || status.equals("")) {
+                Cursor cursor = mContext.getContentResolver().query(ContainsFull.CONTENT_URI, new String[] {ContainsFull.LIST_ID, ContainsFull.ITEM_ID, ContainsFull.STATUS}, ContainsFull.LIST_ID + " = ? AND " + ContainsFull.ITEM_ID + " = ?", new String[] { list_id, item_id }, null);
+                if (cursor == null)
+                    response.setStatusCode(501);
+
+                if (cursor.getCount() == 0) {
+                    status = String.valueOf(ShoppingContract.Status.WANT_TO_BUY);
+                } else {
+                    cursor.moveToFirst();
+                    status = String.valueOf(cursor.getLong(cursor.getColumnIndex(ContainsFull.STATUS)));
+                }
+            }
 
             ShoppingUtils.addItemToList(mContext, Long.valueOf(item_id), Long.valueOf(list_id), Long.valueOf(status), priority, quantity, false, false, false);
         }
