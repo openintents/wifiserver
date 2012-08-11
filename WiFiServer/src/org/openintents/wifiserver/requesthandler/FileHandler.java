@@ -79,6 +79,11 @@ public class FileHandler implements HttpRequestHandler {
      */
     @Override
     public void handle(final HttpRequest request, final HttpResponse response, HttpContext context) throws HttpException, IOException {
+        if (!"GET".equals(request.getRequestLine().getMethod())) {
+            response.setStatusCode(405);
+            return;
+        }
+
         String path = Uri.parse(request.getRequestLine().getUri()).getPath();
         AbstractHttpEntity entity;
 

@@ -45,6 +45,11 @@ public class LoginHandler implements HttpRequestHandler {
      */
     @Override
     public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
+        if (!"POST".equals(request.getRequestLine().getMethod())) {
+            response.setStatusCode(405);
+            return;
+        }
+
         if (request instanceof BasicHttpEntityEnclosingRequest) {
             HttpEntity postEntity = ((BasicHttpEntityEnclosingRequest)request).getEntity();
 
