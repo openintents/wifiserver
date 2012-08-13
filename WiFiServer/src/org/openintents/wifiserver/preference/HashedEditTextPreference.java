@@ -25,24 +25,59 @@ public class HashedEditTextPreference extends EditTextPreference {
 
     private final static String TAG = HashedEditTextPreference.class.getSimpleName();
 
+    /**
+     * Creates a new preference field as defined by
+     * {@link EditTextPreference#EditTextPreference(Context, AttributeSet, int)}
+     *
+     * @param context
+     * @param attrs
+     * @param defStyle
+     */
     public HashedEditTextPreference(Context context, AttributeSet attrs,
             int defStyle) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * Creates a new preference field as defined by
+     * {@link EditTextPreference#EditTextPreference(Context, AttributeSet)}
+     *
+     * @param context
+     * @param attrs
+     */
     public HashedEditTextPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
+    /**
+     * Creates a new preference field as defined by
+     * {@link EditTextPreference#EditTextPreference(Context)}
+     *
+     * @param context
+     */
     public HashedEditTextPreference(Context context) {
         super(context);
     }
 
+    /**
+     * Returns an empty string, because the original value is hashed before
+     * saving it.
+     *
+     * @return An empty string.
+     */
     @Override
     public String getText() {
         return "";
     }
 
+    /**
+     * <p>
+     * {@inheritDoc}
+     * </p>
+     * Before the value is saved, it will be salted and hashed with SHA-256
+     * algorithm. The salt is then again appended to the hashed value.
+     * If the value is empty, nothing will be changed.
+     */
     @Override
     public void setText(String text) {
         /*

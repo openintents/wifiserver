@@ -44,9 +44,9 @@ import com.googlecode.androidannotations.annotations.ViewById;
 import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 
 /**
- * This class represents the main activity. It cannot be used directly by the
- * manifest file, becuase it is subclassed by AndroidAnnotations. Instead use
- * OIWifiServerActivity_ when referencing this class.
+ * This class represents the main activity. It must not be used directly by the
+ * manifest file, because it is sub-classed by AndroidAnnotations. Instead use
+ * <b>OIWifiServerActivity_</b> when referencing this class.
  *
  * @author Stanley Förster
  */
@@ -171,6 +171,11 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
 ///////////////////////////////   SERVER   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Starts the actual web server, which will be configured using the app's
+     * preferences. All request handlers are registered as well as a
+     * {@link ServerStatusListener}
+     */
     private void startServer() {
         if (mWebServer == null) {
             if (prefs.sslEnable().get())
@@ -226,7 +231,7 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
     }
 
     /**
-     * After the server has been stopped, this methid is called and updates the
+     * After the server has been stopped, this method is called, which updates the
      * GUI. The server URL is removed and the start/stop toggle button is
      * "un-toggled".
      */
@@ -235,6 +240,10 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
         textURL.setText("");
     }
 
+    /**
+     * After the server has been started, this method is called. It will show
+     * the server's URL within the user interface.
+     */
     private void serverStarted() {
         textURL.setText(buildURLString());
     }

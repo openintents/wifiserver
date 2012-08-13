@@ -15,12 +15,34 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 
+/**
+ * Handler which is used to update notes. It handles requests of the form "/notes/update".
+ *
+ * @author Stanley Förster
+ *
+ */
 public class UpdateNote extends NotesHandler {
 
+    /**
+     * Creates a new handler.
+     *
+     * @param context The application's context.
+     */
     public UpdateNote(Context context) {
         super(context);
     }
 
+    /**
+     * <p>
+     * {@inheritDoc}
+     * </p>
+     * This method updates a existing note. The required HTTP method is POST.
+     * Every other method will cause a 405 status code to be returned.
+     * To update a note, at least the id, title and name are required. The id is
+     * used to identify the note. If one or more of these parameters are missing
+     * or a malformed id is given, the status code 400 will be returned. A
+     * status code 500 will be returned if parameters could not be parsed.
+     */
     @Override
     protected void getResponse(HttpRequest request, HttpResponse response, HttpContext context) {
         if (!"POST".equals(request.getRequestLine().getMethod())) {

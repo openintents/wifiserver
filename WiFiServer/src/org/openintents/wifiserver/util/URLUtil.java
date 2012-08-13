@@ -25,7 +25,7 @@ public class URLUtil {
      *            Name of the parameter.
      * @return Parameter's value or <code>null</code> if the parameter isn't present.
      *
-     * @see Uri.getQueryParameter
+     * @see Uri#getQueryParameter(String)
      */
     public static String getParameter(String uri, String paramName) {
         return getParameter(Uri.parse(uri), paramName);
@@ -41,7 +41,7 @@ public class URLUtil {
      *            Name of the parameter.
      * @return Parameter's value or <code>null</code> if the parameter isn't present.
      *
-     * @see Uri.getQueryParameter
+     * @see Uri#getQueryParameter(String)
      */
     public static String getParameter(Uri uri, String paramName) {
         return uri.getQueryParameter(paramName);

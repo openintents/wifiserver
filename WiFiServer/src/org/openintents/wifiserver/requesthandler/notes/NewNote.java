@@ -15,12 +15,36 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 
+/**
+ * Handler which is used to create new notes. It handles requests of the form "/notes/new".
+ *
+ * @author Stanley Förster
+ *
+ */
 public class NewNote extends NotesHandler {
 
+    /**
+     * Creates a new handler.
+     *
+     * @param context The application's context.
+     */
     public NewNote(Context context) {
         super(context);
     }
 
+    /**
+     * <p>
+     * {@inheritDoc}
+     * </p>
+     *
+     * This handler creates a new note with the given attributes. The request
+     * method must be POST, otherwise a status code 405 will be returned.
+     * At least a <code>title</code> and the <code>note</code> itself are
+     * required, <code>tags</code> is a optional field. If these parameters are
+     * not available, status code 400 will be returned. If the parameter parsing
+     * failed, 500 will be returned.
+     * In all other cases a new note will be created.
+     */
     @Override
     protected void getResponse(HttpRequest request, HttpResponse response, HttpContext context) {
         if (!"POST".equals(request.getRequestLine().getMethod())) {

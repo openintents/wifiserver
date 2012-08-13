@@ -28,6 +28,9 @@ import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 /**
  * The FileHandler interprets the request URL as a path to a file and tries to
  * return this.
+ * An object must not be constructed using this class' constructor but the
+ * <code>FileHandler_</code>'s one.
+ * This is necessary because of the injection mechanism.
  *
  * @author Stanley Förster
  *
@@ -64,7 +67,7 @@ public class FileHandler implements HttpRequestHandler {
      * </p>
      * Every URL is interpreted as path to a file. This file is returned with
      * the appropriate mime type and status code 200.
-     * If a file does not exists the response will be emtpy and status code is
+     * If a file does not exists the response will be empty and status code is
      * 404.
      * There are three exception of this:
      * <ul>

@@ -8,8 +8,23 @@ import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
 
+/**
+ * This handler handles requests of the form "/logout" and logs out the user
+ * from the server.
+ *
+ * @author Stanley Förster
+ *
+ */
 public class LogoutHandler implements HttpRequestHandler {
 
+    /**
+     * <p>
+     * {@inheritDoc}
+     * </p>
+     * The authentication cookie will be invalidated by setting the session-id
+     * to an invalid value and the cookie's expire date to something in the
+     * past.
+     */
     @Override
     public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
         if (!"GET".equals(request.getRequestLine().getMethod())) {

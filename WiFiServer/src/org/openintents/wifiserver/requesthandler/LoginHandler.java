@@ -22,6 +22,9 @@ import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 
 /**
  * The LoginHandler handles requests of the form "/login".
+ * An object must not be constructed using this class' constructor but the
+ * <code>LoginHandler_</code>'s one.
+ * This is necessary because of the injection mechanism.
  *
  * @author Stanley Förster
  *
