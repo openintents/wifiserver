@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.openintents.distribution.DistributionLibraryActivity;
 import org.openintents.wifiserver.preference.OIWiFiPreferencesActivity_;
 import org.openintents.wifiserver.preference.OiWiFiPreferences_;
+import org.openintents.wifiserver.requesthandler.AvailableAppsHandler;
 import org.openintents.wifiserver.requesthandler.FileHandler_;
 import org.openintents.wifiserver.requesthandler.LoginHandler_;
 import org.openintents.wifiserver.requesthandler.LogoutHandler;
@@ -192,6 +193,7 @@ public class OIWiFiServerActivity extends DistributionLibraryActivity {
             }
 
             mWebServer.registerRequestHandler("*",              FileHandler_.getInstance_(this));
+            mWebServer.registerRequestHandler("/apps",          new AvailableAppsHandler(this));
             mWebServer.registerRequestHandler("/notes/get*",    new GetNote(this));
             mWebServer.registerRequestHandler("/notes/delete*", new DeleteNote(this));
             mWebServer.registerRequestHandler("/notes/new",     new NewNote(this));
