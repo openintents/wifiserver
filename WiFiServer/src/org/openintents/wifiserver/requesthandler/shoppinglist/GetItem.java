@@ -23,7 +23,7 @@ import android.net.Uri;
 import android.util.Log;
 
 /**
- * Handles requests that ask for all or a specific item.
+ * Handler which is used to retrieve all or a specific item. It handles requests of the form "/shoppinglist/list/get".
  *
  * @author Stanley Förster
  *
@@ -57,6 +57,29 @@ public class GetItem extends ShoppinglistHandler {
         super(context);
     }
 
+    /**
+     * <p>
+     * {@inheritDoc}
+     * </p>
+     *
+     * This method deletes an item. The required HTTP method is GET.
+     *
+     * To specify a special item, the <code>id</code> and <code>list</code> parameters can be used:
+     * <ul>
+     * <li><code>id</code> specifies the item, that should be returned.</li>
+     * <li><code>list</code> specifies the list, that contains the item.</li>
+     * </ul>
+     * If no parameter is given, all items will be returned. If only the <code>list</code> parameter is present, all items of this list will be returned.
+     *
+     * <p>
+     * Status Codes:
+     * <ul>
+     * <li>405: if HTTP method is not GET</li>
+     * <li>501: if OI Shoppinglist app is not installed on the device.</li>
+     * <li>500: if something went wrong during response creation.</li>
+     * </ul>
+     * </p>
+     */
     @Override
     public void getResponse(HttpRequest request, HttpResponse response, HttpContext context) {
         if (!"GET".equals(request.getRequestLine().getMethod())) {
@@ -117,10 +140,20 @@ public class GetItem extends ShoppinglistHandler {
     }
 
     /**
-     * Wrapper for the {@link Context#getContentResolver()#query(Uri, String[], String, String[], String)} method which throws an exception if the necessary URI is not available.
-     * This behavior simplifies the handling of all the different cases much easier.
+     * <p>
+     * Wrapper for the {@link ContentResolver#query(Uri, String[],
+     * String, String[], String)} method which throws an exception if the
+     * necessary URI is not available.
+     * This behavior simplifies the handling of all the different cases much
+     * easier.
+     * </p>
+     * <p>
+     * For parameter and return value definition see
+     * {@link ContentResolver#query(Uri, String[], String,
+     * String[], String)}.
+     * </p>
      *
-     * For parameter and return value definition see {@link Context#getContentResolver()#query(Uri, String[], String, String[], String)}.
+     * @return The cursor that is returned by {@link ContentResolver#query(Uri, String[], String, String[], String)}
      *
      * @see Cursor
      * @see ContentResolver#query(Uri, String[], String, String[], String)
@@ -136,12 +169,14 @@ public class GetItem extends ShoppinglistHandler {
     /**
      * Creates a JSON object which contains all the given parameters.
      *
-     * @param id
-     * @param name
-     * @param price
-     * @param units
-     * @param tags
-     * @return
+     * @param id {@link Items#_ID}
+     * @param name {@link Items#NAME}
+     * @param price {@link Items#PRICE}
+     * @param units {@link Items#UNITS}
+     * @param tags {@link Items#TAGS}
+     *
+     * @return A JSONObject, containing all the parameters.
+     *
      * @throws JSONException
      */
     protected JSONObject itemToJSONObject(long id, String name, long price, String units, String tags) throws JSONException {
