@@ -1,0 +1,48 @@
+# OI WiFi Server
+#
+# Application name and promo text are extracted from the application strings.
+#
+# (Put each sentence in a separate line. Each sentence is translated separately)
+#
+# Description of application
+OI WiFi Server is an application which makes it possible to access your other OI App's data via a web browser.
+Currently you can read, write and delete notes if OI notepad is installed on your device.
+Encrypted notes are not supported, yet.
+OI ShoppingList is also available via the webinterface, but not all features are supported, yet.
+An authentication mechanism is provided, to control access to your data.
+The server supports SSL to browse via a secure HTTPS connection.
+
+The source code of this free and open source application is available at:
+https://github.com/openintents
+
+This application is ad free and does require the internet permission for opening ports.
+
+For the complete list of changes and a list of frequently asked questions, please visit:
+http://www.openintents.org
+
+You can help to improve the translation into your language at Launchpad:
+https://translations.launchpad.net/openintents/trunk
+
+Features:
+* Access your notes via a webbrowser on another computer in the same network.
+* Use nearly all the features of OI Notepad, like add, delete and modify notes.
+* Use basic features of OI Shoppinglist, like add, delete and modify lists and items.
+* Easy to use and intuitive web interface.
+* Authentication mechanism
+* SSL support
+
+Available extensions for "OI WiFi Server":
+* Show the license information with "OI About".
+
+Keywords:
+* WiFi, WLAN, Server
+* OI, OpenIntents, Open Intents
+
+International versions:
+#$ international
+
+Extensions:
+# (these are not translated into other languages)
+#$ include description_extensions.txt
+
+

@@ -1,0 +1,3 @@
+* uses OI Shopping List
+* uses OI About
+* uses OI Notepad
