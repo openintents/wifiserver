@@ -90,6 +90,10 @@ public class FileHandler implements HttpRequestHandler {
         String path = Uri.parse(request.getRequestLine().getUri()).getPath();
         AbstractHttpEntity entity;
 
+        if (path.endsWith("favicon.png")) {
+            path = path.replace("favicon.png", "wifiserver.png");
+        }
+
         if ("/".equals(path)) {
             response.setStatusCode(301);
             response.setHeader("Location", request.getRequestLine().getUri()+"index.html");
