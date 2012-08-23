@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- ***************************
+         About information
+         *************************** -->
+    <string name="about_translators">Launchpad Contributions:
+  OpenIntents devs https://launchpad.net/~openintents-devs</string>
+    
+    <!-- Short explanation of the application (max. 80 characters) -->
+    <string name="about_comments">Greife auf deine OI apps über einen Web-Browser zu.</string>
+    
+    <!-- ***************************
+         Application strings
+         *************************** -->
+    <string name="app_name">OI WiFi Server</string>
+    <string name="wifistatus">WLAN Status</string>
+    <string name="disconnected">nicht verbunden</string>
+    <string name="connected">verbunden</string>
+    <string name="url">Adresse (URL)</string>
+    <string name="startServer">Server starten</string>
+    <string name="stopServer">Server stoppen</string>
+    <string name="preferences">Einstellungen</string>
+    <string name="errorPortBoundaries" tools:ignore="UnusedResources,UnusedResources">Der Posrt muss zwichen 1000 und 65535 liegen</string>
+    <string name="errorPortDuplicate" tools:ignore="UnusedResources">Die Ports für HTTP und HTTPS Verbindungen sollten nicht die gleichen sein!</string>
+    <string name="errorPasswordNotEmpty" tools:ignore="UnusedResources">Das Passwort darf nicht leer sein!</string>
+    <string name="warningSetPassword">Passwortschutz aktiviert. Bitte nicht vergessen, ein Passwort zu erstellen.</string>
+    
+    <!-- ***************************
+         Preferences
+         *************************** -->
+    <string name="prefsCategoryServer">Server</string>
+    <string name="prefsSSLEnableTitle">SSL aktivieren</string>
+    <string name="prefsSSLEnableSummary">Aktiviert SSL um eine sichere HTTPS Verbindung zu nutzen.</string>
+    <string name="prefsSSLPortTitle">SSL Port</string>
+    <string name="prefsSSLPortSummary">Dieser Port wird für die HTTPS Verbindung genutzt</string>
+    <string name="prefsPortTitle">Standard Port</string>
+    <string name="prefsPortSummary">Dieser Port wird bereits für die HTTP Verbindung genutzt</string>
+    <string name="prefsCategoryPassword">Passwortschutz</string>
+    <string name="prefsPasswordEnableTitle">Passwortabfrage aktivieren</string>
+    <string name="prefsPasswordEnableSummary">Der Nutzer wird nach einem Passwort gefragt, wenn er versucht, auf den Server zuzugreifen.</string>
+    <string name="prefsCustomPasswordTitle">Passwort</string>
+    <string name="prefsCustomPasswordSummary">Passwort setzen</string>
+</resources>
